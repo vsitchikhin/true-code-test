@@ -3,10 +3,8 @@ services:
     image: postgres:15-alpine
     container_name: true_code_db
     restart: always
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+    env_file:
+      - ./back/.env
     ports:
       - "${DB_PORT}:5432"
     volumes:
@@ -20,13 +18,8 @@ services:
     restart: always
     ports:
       - "3000:3000"
-    environment:
-      - DATABASE_HOST=${DB_HOST}
-      - DATABASE_PORT=${DB_PORT}
-      - DATABASE_USER=${DB_USER}
-      - DATABASE_PASSWORD=${DB_PASSWORD}
-      - DATABASE_NAME=${DB_NAME}
-      - JWT_SECRET=${JWT_SECRET}
+    env_file:
+      - ./back/.env
     depends_on:
       - db
     volumes:

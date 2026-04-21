@@ -1,7 +1,11 @@
 .env
+back/.env
 !.env.example
+!.env.back.example
+!.env.front.example
 .local_configs/
 .scratch/
+.vscode/
 
 # Dependencies
 node_modules/
