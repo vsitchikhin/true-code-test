@@ -18,6 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   validate(payload: TokenPayload) {
     // В будущем здесь можно добавить проверку, не забанен ли пользователь
-    return { userId: payload.userId, username: payload.username };
+    return { id: payload.userId, username: payload.username };
   }
 }

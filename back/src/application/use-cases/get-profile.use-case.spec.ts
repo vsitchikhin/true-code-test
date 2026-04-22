@@ -30,7 +30,7 @@ describe('GetProfileUseCase', () => {
     const result = await useCase.execute(userId);
 
     expect(result).toBe(user);
-     
+
     expect(userRepository.findById).toHaveBeenCalledWith(userId);
   });
 

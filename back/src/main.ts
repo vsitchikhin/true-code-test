@@ -1,8 +1,11 @@
+import { join } from 'path';
+
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+import * as express from 'express';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
@@ -15,7 +18,8 @@ async function bootstrap() {
   app.use(helmet());
   app.setGlobalPrefix('api');
 
-  // Настройка CORS из .env
+  app.use('/uploads', express.static(join(__dirname, '..', '..', 'uploads')));
+
   const allowedOrigins = configService.get<string>('ALLOWED_ORIGINS');
   app.enableCors({
     origin: allowedOrigins ? allowedOrigins.split(',') : true,
@@ -36,13 +40,13 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
   const port = configService.get<number>('PORT') ?? 3000;
   await app.listen(port);
-  
+
   logger.log(`Application is running on: http://localhost:${port}/api`);
   logger.log(`Swagger documentation: http://localhost:${port}/api/docs`);
 }

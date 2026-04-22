@@ -38,7 +38,7 @@ describe('UpdateProfileUseCase', () => {
 
     expect(result.bio).toBe('New bio');
     expect(result.avatarPath).toBe('/path/to/avatar.png');
-     
+
     expect(userRepository.save).toHaveBeenCalled();
   });
 
@@ -57,7 +57,7 @@ describe('UpdateProfileUseCase', () => {
     const result = await useCase.execute(command);
 
     expect(result.username).toBe('newname');
-     
+
     expect(userRepository.findByUsername).toHaveBeenCalledWith('newname');
   });
 

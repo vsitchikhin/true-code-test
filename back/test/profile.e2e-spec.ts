@@ -1,7 +1,9 @@
 /* eslint-disable */
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import request from 'supertest';
+
 import { AppModule } from '@/app.module';
 
 interface LoginResponse {
@@ -16,7 +18,6 @@ interface LoginResponse {
 describe('Profile (e2e)', () => {
   let app: INestApplication;
   let accessToken: string;
-   
   let httpServer: any;
 
   const testUser = {
