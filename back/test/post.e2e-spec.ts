@@ -93,4 +93,68 @@ describe('Posts (e2e)', () => {
         });
     });
   });
+
+  describe('PATCH /api/posts/:id', () => {
+    it('should update post content and add images', async () => {
+      // 1. Создаем пост
+      const createRes = await request(httpServer)
+        .post('/api/posts')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('content', 'Initial content')
+        .attach('images', Buffer.from('img1'), 'img1.png');
+
+      const postId = createRes.body.id;
+
+      // 2. Обновляем его
+      await request(httpServer)
+        .patch(`/api/posts/${postId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('content', 'Updated content')
+        .attach('images', Buffer.from('img2'), 'img2.png')
+        .expect(200);
+
+      // 3. Проверяем изменения через ленту
+      const feedRes = await request(httpServer)
+        .get('/api/posts')
+        .expect(200);
+
+      const updatedPost = feedRes.body.posts.find((p: any) => p.id === postId);
+      expect(updatedPost.content).toBe('Updated content');
+      expect(updatedPost.images.length).toBe(2);
+    });
+  });
+
+  describe('DELETE /api/posts/:id', () => {
+    it('should delete own post', async () => {
+      // Сначала создаем пост
+      const createRes = await request(httpServer)
+        .post('/api/posts')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('content', 'To be deleted')
+        .attach('images', Buffer.from('img'), 'del.png');
+
+      const postId = createRes.body.id;
+
+      // Удаляем его
+      await request(httpServer)
+        .delete(`/api/posts/${postId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204);
+
+      // Проверяем, что его больше нет
+      const feedRes = await request(httpServer)
+        .get('/api/posts')
+        .expect(200);
+
+      const deletedPost = feedRes.body.posts.find((p: any) => p.id === postId);
+      expect(deletedPost).toBeUndefined();
+    });
+
+    it('should return 404 for non-existent post', () => {
+      return request(httpServer)
+        .delete('/api/posts/00000000-0000-0000-0000-000000000000')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
+    });
+  });
 });

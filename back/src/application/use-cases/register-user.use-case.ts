@@ -1,6 +1,7 @@
+import { randomUUID } from 'node:crypto';
+
 import { Injectable, Inject } from '@nestjs/common';
 
-import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '@domain/entities/user.entity';
 import type { IUserRepository } from '@domain/repositories/user.repository.interface';
@@ -41,7 +42,7 @@ export class RegisterUserUseCase {
     const passwordHash = await this.passwordHasher.hash(command.password);
 
     const user = new User(
-      uuidv4(),
+      randomUUID(),
       command.email,
       command.username,
       passwordHash,

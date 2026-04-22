@@ -19,7 +19,7 @@ export class PostOrmEntity {
   @JoinColumn({ name: 'author_id' })
   author: UserOrmEntity;
 
-  @OneToMany(() => PostImageOrmEntity, (image) => image.post)
+  @OneToMany(() => PostImageOrmEntity, (image) => image.post, { cascade: true })
   images: PostImageOrmEntity[];
 
   @CreateDateColumn({ name: 'created_at' })

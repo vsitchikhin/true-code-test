@@ -20,7 +20,7 @@ export class PostImageOrmEntity {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @ManyToOne(() => PostOrmEntity, (post) => post.images)
+  @ManyToOne(() => PostOrmEntity, (post) => post.images, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'post_id' })
   post: PostOrmEntity;
 }

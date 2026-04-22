@@ -11,13 +11,19 @@ import {
   UploadedFiles,
   Query,
   BadRequestException,
+  Delete,
+  Param,
+  HttpCode,
+  Patch,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { diskStorage } from 'multer';
 
 import { CreatePostUseCase } from '@application/use-cases/create-post.use-case';
+import { DeletePostUseCase } from '@application/use-cases/delete-post.use-case';
 import { GetFeedUseCase } from '@application/use-cases/get-feed.use-case';
+import { UpdatePostUseCase } from '@application/use-cases/update-post.use-case';
 import { JwtAuthGuard } from '@infrastructure/security/jwt-auth.guard';
 import { CurrentUser } from '@presentation/decorators/current-user.decorator';
 
@@ -26,6 +32,8 @@ export class PostController {
   constructor(
     private readonly createPostUseCase: CreatePostUseCase,
     private readonly getFeedUseCase: GetFeedUseCase,
+    private readonly deletePostUseCase: DeletePostUseCase,
+    private readonly updatePostUseCase: UpdatePostUseCase,
   ) { }
 
   @Post()
@@ -76,6 +84,58 @@ export class PostController {
     return this.getFeedUseCase.execute({
       page: pageNum > 0 ? pageNum : 1,
       limit: limitNum > 0 ? limitNum : 10,
+    });
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_req, file, cb) => {
+          const uniqueSuffix = randomUUID();
+          cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+        },
+      }),
+      fileFilter: (_req, file, cb) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+          return cb(new BadRequestException('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  async update(
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+    @Body('content') content: string,
+    @Body('removeImageIds') removeImageIds: string | string[],
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    // Body can send a single ID as a string or an array of strings
+    const imagesToRemoveIds = typeof removeImageIds === 'string' ? [removeImageIds] : removeImageIds;
+    const newImagePaths = files?.map((file) => `/uploads/${file.filename}`);
+
+    return this.updatePostUseCase.execute({
+      postId: id,
+      authorId: userId,
+      content,
+      newImagePaths,
+      imagesToRemoveIds,
+    });
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  async delete(
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+  ) {
+    await this.deletePostUseCase.execute({
+      postId: id,
+      authorId: userId,
     });
   }
 }

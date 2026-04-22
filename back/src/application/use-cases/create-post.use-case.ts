@@ -1,6 +1,7 @@
+import { randomUUID } from 'node:crypto';
+
 import { Injectable, Inject } from '@nestjs/common';
 
-import { v4 as uuidv4 } from 'uuid';
 
 import { PostImage } from '@domain/entities/post-image.entity';
 import { Post } from '@domain/entities/post.entity';
@@ -20,11 +21,11 @@ export class CreatePostUseCase {
   ) {}
 
   async execute(command: CreatePostCommand): Promise<Post> {
-    const postId = uuidv4();
+    const postId = randomUUID();
     
     const images = command.imagePaths.map((path, index) => {
       return new PostImage(
-        uuidv4(),
+        randomUUID(),
         postId,
         path,
         index,

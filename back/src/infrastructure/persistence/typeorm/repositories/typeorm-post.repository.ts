@@ -67,6 +67,14 @@ export class TypeOrmPostRepository implements IPostRepository {
     return ormPost ? this.toDomain(ormPost) : null;
   }
 
+  async delete(id: string): Promise<void> {
+    await this.postRepo.delete(id);
+  }
+
+  async update(post: Post): Promise<Post> {
+    return this.save(post);
+  }
+
   private toDomain(ormPost: PostOrmEntity): Post {
     const images = ormPost.images?.map(
       (img) => new PostImage(img.id, ormPost.id, img.path, img.order, img.createdAt),
