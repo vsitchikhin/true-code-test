@@ -2,12 +2,16 @@ import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException } f
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { LoginUseCase } from '@application/use-cases/login.use-case';
+import { RefreshTokenUseCase } from '@application/use-cases/refresh-token.use-case';
 import { LoginDto } from '@presentation/dtos/login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly loginUseCase: LoginUseCase) { }
+  constructor(
+    private readonly loginUseCase: LoginUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
+  ) { }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -20,5 +24,14 @@ export class AuthController {
     } catch (error) {
       throw new UnauthorizedException((error as Error).message);
     }
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Обновление токенов' })
+  @ApiResponse({ status: 200, description: 'Токены успешно обновлены' })
+  @ApiResponse({ status: 401, description: 'Невалидный refresh-токен' })
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    return this.refreshTokenUseCase.execute({ refreshToken });
   }
 }

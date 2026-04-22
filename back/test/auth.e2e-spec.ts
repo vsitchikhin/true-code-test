@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -8,6 +9,7 @@ import { AppModule } from '@/app.module';
 
 describe('Authentication (e2e)', () => {
   let app: INestApplication;
+  let httpServer: any;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,6 +20,7 @@ describe('Authentication (e2e)', () => {
     app.useGlobalPipes(new ValidationPipe());
     app.setGlobalPrefix('api');
     await app.init();
+    httpServer = app.getHttpServer();
   });
 
   afterAll(async () => {
@@ -32,30 +35,31 @@ describe('Authentication (e2e)', () => {
   };
 
   interface AuthResponse {
-    email: string;
-    id: string;
-    token: string;
+    accessToken: string;
+    refreshToken: string;
     user: {
+      id: string;
+      email: string;
       username: string;
     };
   }
 
   it('/api/users/register (POST) - Success', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return request(app.getHttpServer())
+     
+    return request(httpServer)
       .post('/api/users/register')
       .send(testUser)
       .expect(201)
       .expect((res) => {
-        const body = res.body as AuthResponse;
+        const body = res.body as { email: string; id: string };
         expect(body.email).toEqual(testUser.email);
         expect(body.id).toBeDefined();
       });
   });
 
   it('/api/auth/login (POST) - Success', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return request(app.getHttpServer())
+     
+    return request(httpServer)
       .post('/api/auth/login')
       .send({
         identifier: testUser.email,
@@ -64,14 +68,39 @@ describe('Authentication (e2e)', () => {
       .expect(200)
       .expect((res) => {
         const body = res.body as AuthResponse;
-        expect(body.token).toBeDefined();
+        expect(body.accessToken).toBeDefined();
+        expect(body.refreshToken).toBeDefined();
         expect(body.user.username).toEqual(testUser.username);
       });
   });
 
+  it('/api/auth/refresh (POST) - Success', async () => {
+    // 1. Сначала логинимся
+    const loginRes = await request(httpServer)
+      .post('/api/auth/login')
+      .send({
+        identifier: testUser.email,
+        password: testUser.password,
+      });
+
+    const { refreshToken } = loginRes.body as AuthResponse;
+
+    // 2. Обновляем токены
+    const refreshRes = await request(httpServer)
+      .post('/api/auth/refresh')
+      .send({ refreshToken })
+      .expect(200);
+
+    const refreshBody = refreshRes.body as AuthResponse;
+    expect(refreshBody.accessToken).toBeDefined();
+    expect(refreshBody.refreshToken).toBeDefined();
+    // Refresh-токен должен измениться (rotate)
+    expect(refreshBody.refreshToken).not.toBe(refreshToken);
+  });
+
   it('/api/auth/login (POST) - Success by Phone', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return request(app.getHttpServer())
+     
+    return request(httpServer)
       .post('/api/auth/login')
       .send({
         identifier: testUser.phoneNumber,
@@ -80,13 +109,13 @@ describe('Authentication (e2e)', () => {
       .expect(200)
       .expect((res) => {
         const body = res.body as AuthResponse;
-        expect(body.token).toBeDefined();
+        expect(body.accessToken).toBeDefined();
       });
   });
 
   it('/api/auth/login (POST) - Failure (Wrong Password)', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return request(app.getHttpServer())
+     
+    return request(httpServer)
       .post('/api/auth/login')
       .send({
         identifier: testUser.email,

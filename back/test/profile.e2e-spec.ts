@@ -7,7 +7,8 @@ import request from 'supertest';
 import { AppModule } from '@/app.module';
 
 interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: {
     id: string;
     email: string;
@@ -50,7 +51,7 @@ describe('Profile (e2e)', () => {
         password: testUser.password,
       });
 
-    accessToken = (loginRes.body as LoginResponse).token;
+    accessToken = (loginRes.body as LoginResponse).accessToken;
   });
 
   afterAll(async () => {
@@ -121,6 +122,20 @@ describe('Profile (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({ username: 'other_user' })
         .expect(400); // Мы бросаем BadRequestException в контроллере для всех ошибок
+    });
+  });
+
+  describe('PATCH /api/users/avatar', () => {
+    it('should upload user avatar', async () => {
+      const buffer = Buffer.from('avatar content');
+      
+      const res = await request(httpServer)
+        .patch('/api/users/avatar')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('avatar', buffer, 'avatar.png')
+        .expect(200);
+
+      expect(res.body.avatarPath).toContain('/uploads/avatars/');
     });
   });
 });

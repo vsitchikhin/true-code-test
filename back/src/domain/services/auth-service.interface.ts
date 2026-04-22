@@ -1,9 +1,12 @@
 export interface TokenPayload {
   userId: string;
   username: string;
+  jti?: string;
 }
 
 export interface IAuthService {
-  generateToken(payload: TokenPayload): Promise<string>;
-  verifyToken(token: string): Promise<TokenPayload | null>;
+  generateAccessToken(payload: TokenPayload): Promise<string>;
+  generateRefreshToken(payload: TokenPayload): Promise<string>;
+  verifyAccessToken(token: string): Promise<TokenPayload | null>;
+  verifyRefreshToken(token: string): Promise<TokenPayload | null>;
 }

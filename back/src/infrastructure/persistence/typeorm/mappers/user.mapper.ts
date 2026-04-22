@@ -11,6 +11,7 @@ export class UserMapper {
       ormEntity.phoneNumber,
       ormEntity.bio,
       ormEntity.avatarPath,
+      ormEntity.refreshTokenHash,
       ormEntity.createdAt,
     );
     return user;
@@ -25,6 +26,7 @@ export class UserMapper {
     ormEntity.phoneNumber = domainEntity.phoneNumber;
     ormEntity.bio = domainEntity.bio ?? null;
     ormEntity.avatarPath = domainEntity.avatarPath ?? null;
+    ormEntity.refreshTokenHash = domainEntity.refreshTokenHash ?? null;
     ormEntity.createdAt = domainEntity.createdAt;
     return ormEntity;
   }

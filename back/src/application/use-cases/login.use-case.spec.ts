@@ -34,8 +34,10 @@ describe('LoginUseCase', () => {
     };
 
     authService = {
-      generateToken: jest.fn(),
-      verifyToken: jest.fn(),
+      generateAccessToken: jest.fn(),
+      generateRefreshToken: jest.fn(),
+      verifyAccessToken: jest.fn(),
+      verifyRefreshToken: jest.fn(),
     };
 
     useCase = new LoginUseCase(userRepository, passwordHasher, authService);
@@ -49,11 +51,14 @@ describe('LoginUseCase', () => {
 
     userRepository.findByEmail.mockResolvedValue(mockUser);
     passwordHasher.compare.mockResolvedValue(true);
-    authService.generateToken.mockResolvedValue('jwt_token');
+    authService.generateAccessToken.mockResolvedValue('access_token');
+    authService.generateRefreshToken.mockResolvedValue('refresh_token');
+    passwordHasher.hash.mockResolvedValue('refresh_token_hash');
 
     const result = await useCase.execute(command);
 
-    expect(result.token).toBe('jwt_token');
+    expect(result.accessToken).toBe('access_token');
+    expect(result.refreshToken).toBe('refresh_token');
     expect(result.user.email).toBe(mockUser.email);
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(userRepository.findByEmail).toHaveBeenCalledWith(command.identifier);
@@ -68,11 +73,14 @@ describe('LoginUseCase', () => {
     userRepository.findByEmail.mockResolvedValue(null);
     userRepository.findByUsername.mockResolvedValue(mockUser);
     passwordHasher.compare.mockResolvedValue(true);
-    authService.generateToken.mockResolvedValue('jwt_token');
+    authService.generateAccessToken.mockResolvedValue('access_token');
+    authService.generateRefreshToken.mockResolvedValue('refresh_token');
+    passwordHasher.hash.mockResolvedValue('refresh_token_hash');
 
     const result = await useCase.execute(command);
 
-    expect(result.token).toBe('jwt_token');
+    expect(result.accessToken).toBe('access_token');
+    expect(result.refreshToken).toBe('refresh_token');
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(userRepository.findByUsername).toHaveBeenCalledWith(command.identifier);
   });
@@ -87,11 +95,14 @@ describe('LoginUseCase', () => {
     userRepository.findByUsername.mockResolvedValue(null);
     userRepository.findByPhoneNumber.mockResolvedValue(mockUser);
     passwordHasher.compare.mockResolvedValue(true);
-    authService.generateToken.mockResolvedValue('jwt_token');
+    authService.generateAccessToken.mockResolvedValue('access_token');
+    authService.generateRefreshToken.mockResolvedValue('refresh_token');
+    passwordHasher.hash.mockResolvedValue('refresh_token_hash');
 
     const result = await useCase.execute(command);
 
-    expect(result.token).toBe('jwt_token');
+    expect(result.accessToken).toBe('access_token');
+    expect(result.refreshToken).toBe('refresh_token');
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(userRepository.findByPhoneNumber).toHaveBeenCalledWith(command.identifier);
   });

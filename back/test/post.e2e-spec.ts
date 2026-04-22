@@ -7,7 +7,8 @@ import request from 'supertest';
 import { AppModule } from '@/app.module';
 
 interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 describe('Posts (e2e)', () => {
@@ -45,7 +46,7 @@ describe('Posts (e2e)', () => {
         password: testUser.password,
       });
 
-    accessToken = (loginRes.body as LoginResponse).token;
+    accessToken = (loginRes.body as LoginResponse).accessToken;
   });
 
   afterAll(async () => {

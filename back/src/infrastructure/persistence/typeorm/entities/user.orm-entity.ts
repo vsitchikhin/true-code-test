@@ -26,6 +26,9 @@ export class UserOrmEntity {
   @Column({ name: 'avatar_path', type: 'text', nullable: true })
   avatarPath: string | null;
 
+  @Column({ name: 'refresh_token_hash', type: 'text', nullable: true })
+  refreshTokenHash: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

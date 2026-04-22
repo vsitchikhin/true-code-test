@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { Injectable, Inject } from '@nestjs/common';
 
 import type { IUserRepository } from '@domain/repositories/user.repository.interface';
@@ -10,7 +12,8 @@ export interface LoginCommand {
 }
 
 export interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: {
     id: string;
     email: string;
@@ -47,13 +50,24 @@ export class LoginUseCase {
       throw new Error('Некорректный логин или пароль');
     }
 
-    const token = await this.authService.generateToken({
+    const accessToken = await this.authService.generateAccessToken({
       userId: user.id,
       username: user.username,
     });
 
+    const refreshToken = await this.authService.generateRefreshToken({
+      userId: user.id,
+      username: user.username,
+      jti: randomUUID(),
+    });
+
+    // Хешируем и сохраняем refresh-токен в БД
+    user.refreshTokenHash = await this.passwordHasher.hash(refreshToken);
+    await this.userRepository.save(user);
+
     return {
-      token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,

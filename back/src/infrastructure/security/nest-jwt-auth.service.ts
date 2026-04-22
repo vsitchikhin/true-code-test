@@ -7,11 +7,23 @@ import { IAuthService, TokenPayload } from '@domain/services/auth-service.interf
 export class NestJwtAuthService implements IAuthService {
   constructor(private readonly jwtService: JwtService) { }
 
-  async generateToken(payload: TokenPayload): Promise<string> {
-    return this.jwtService.signAsync(payload);
+  async generateAccessToken(payload: TokenPayload): Promise<string> {
+    return this.jwtService.signAsync(payload, { expiresIn: '15m' });
   }
 
-  async verifyToken(token: string): Promise<TokenPayload | null> {
+  async generateRefreshToken(payload: TokenPayload): Promise<string> {
+    return this.jwtService.signAsync(payload, { expiresIn: '7d' });
+  }
+
+  async verifyAccessToken(token: string): Promise<TokenPayload | null> {
+    try {
+      return await this.jwtService.verifyAsync<TokenPayload>(token);
+    } catch {
+      return null;
+    }
+  }
+
+  async verifyRefreshToken(token: string): Promise<TokenPayload | null> {
     try {
       return await this.jwtService.verifyAsync<TokenPayload>(token);
     } catch {

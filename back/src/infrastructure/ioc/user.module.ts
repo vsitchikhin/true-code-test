@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 
 import { GetProfileUseCase } from '@application/use-cases/get-profile.use-case';
 import { RegisterUserUseCase } from '@application/use-cases/register-user.use-case';
+import { UpdateAvatarUseCase } from '@application/use-cases/update-avatar.use-case';
 import { UpdateProfileUseCase } from '@application/use-cases/update-profile.use-case';
 import { PostImageOrmEntity } from '@infrastructure/persistence/typeorm/entities/post-image.orm-entity';
 import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
@@ -41,7 +42,8 @@ import { UserController } from '@presentation/controllers/user.controller';
     RegisterUserUseCase,
     GetProfileUseCase,
     UpdateProfileUseCase,
+    UpdateAvatarUseCase,
   ],
-  exports: [RegisterUserUseCase, GetProfileUseCase, UpdateProfileUseCase, 'IUserRepository', 'IPasswordHasher'],
+  exports: [RegisterUserUseCase, GetProfileUseCase, UpdateProfileUseCase, UpdateAvatarUseCase, 'IUserRepository', 'IPasswordHasher'],
 })
 export class UserModule {}
