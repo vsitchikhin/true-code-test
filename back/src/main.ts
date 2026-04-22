@@ -18,7 +18,7 @@ async function bootstrap() {
   app.use(helmet());
   app.setGlobalPrefix('api');
 
-  app.use('/uploads', express.static(join(__dirname, '..', '..', 'uploads')));
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   const allowedOrigins = configService.get<string>('ALLOWED_ORIGINS');
   app.enableCors({
