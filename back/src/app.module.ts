@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import * as Joi from 'joi';
 
+import { UserModule } from '@infrastructure/ioc/user.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,6 +20,8 @@ import * as Joi from 'joi';
         JWT_SECRET: Joi.string().required(),
         PORT: Joi.number().default(3000),
         ALLOWED_ORIGINS: Joi.string().required(),
+        BCRYPT_SALT_ROUNDS: Joi.number().default(10),
+        PASSWORD_PEPPER: Joi.string().required(),
       }),
     }),
 
@@ -34,6 +38,8 @@ import * as Joi from 'joi';
         synchronize: false,
       }),
     }),
+
+    UserModule,
   ],
 })
 export class AppModule {}

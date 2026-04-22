@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 
+
 import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
 
 @Entity('users')
@@ -20,10 +21,10 @@ export class UserOrmEntity {
   passwordHash: string;
 
   @Column({ type: 'text', nullable: true })
-  bio: string;
+  bio: string | null;
 
-  @Column({ name: 'avatar_path', nullable: true })
-  avatarPath: string;
+  @Column({ name: 'avatar_path', type: 'text', nullable: true })
+  avatarPath: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

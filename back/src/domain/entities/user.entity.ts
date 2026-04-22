@@ -5,8 +5,8 @@ export class User {
     public username: string,
     public passwordHash: string,
     public phoneNumber: string,
-    public bio?: string,
-    public avatarPath?: string,
+    public bio: string | null = null,
+    public avatarPath: string | null = null,
     public readonly createdAt: Date = new Date(),
-  ) {}
+  ) { }
 }

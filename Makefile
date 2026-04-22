@@ -1,4 +1,4 @@
-.PHONY: up down restart migrate build migration-generate migration-revert logs
+.PHONY: up down restart reup migrate build migration-generate migration-revert logs
 name ?= InitialSchema
 DC = docker compose --env-file back/.env
 
@@ -10,6 +10,8 @@ down:
 
 restart:
 	$(DC) restart
+
+reup: down up
 
 build:
 	$(DC) build
