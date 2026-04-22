@@ -1,6 +1,8 @@
-import { IUserRepository } from '@domain/repositories/user.repository.interface';
-import { IAuthService } from '@domain/services/auth-service.interface';
-import { IPasswordHasher } from '@domain/services/password-hasher.interface';
+import { Injectable, Inject } from '@nestjs/common';
+
+import type { IUserRepository } from '@domain/repositories/user.repository.interface';
+import type { IAuthService } from '@domain/services/auth-service.interface';
+import type { IPasswordHasher } from '@domain/services/password-hasher.interface';
 
 export interface LoginCommand {
   identifier: string; // email or username or phone number
@@ -16,10 +18,14 @@ export interface LoginResponse {
   };
 }
 
+@Injectable()
 export class LoginUseCase {
   constructor(
+    @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
+    @Inject('IPasswordHasher')
     private readonly passwordHasher: IPasswordHasher,
+    @Inject('IAuthService')
     private readonly authService: IAuthService,
   ) { }
 

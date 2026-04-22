@@ -1,8 +1,10 @@
+import { Injectable, Inject } from '@nestjs/common';
+
 import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '@domain/entities/user.entity';
-import { IUserRepository } from '@domain/repositories/user.repository.interface';
-import { IPasswordHasher } from '@domain/services/password-hasher.interface';
+import type { IUserRepository } from '@domain/repositories/user.repository.interface';
+import type { IPasswordHasher } from '@domain/services/password-hasher.interface';
 
 export interface RegisterUserCommand {
   email: string;
@@ -11,9 +13,12 @@ export interface RegisterUserCommand {
   phoneNumber: string;
 }
 
+@Injectable()
 export class RegisterUserUseCase {
   constructor(
+    @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
+    @Inject('IPasswordHasher')
     private readonly passwordHasher: IPasswordHasher,
   ) { }
 

@@ -5,9 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
+import { GetProfileUseCase } from '@application/use-cases/get-profile.use-case';
 import { RegisterUserUseCase } from '@application/use-cases/register-user.use-case';
-import { IUserRepository } from '@domain/repositories/user.repository.interface';
-import { IPasswordHasher } from '@domain/services/password-hasher.interface';
+import { UpdateProfileUseCase } from '@application/use-cases/update-profile.use-case';
 import { PostImageOrmEntity } from '@infrastructure/persistence/typeorm/entities/post-image.orm-entity';
 import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
 import { UserOrmEntity } from '@infrastructure/persistence/typeorm/entities/user.orm-entity';
@@ -38,14 +38,10 @@ import { UserController } from '@presentation/controllers/user.controller';
       },
       inject: [ConfigService],
     },
-    {
-      provide: RegisterUserUseCase,
-      useFactory: (userRepository: IUserRepository, passwordHasher: IPasswordHasher) => {
-        return new RegisterUserUseCase(userRepository, passwordHasher);
-      },
-      inject: ['IUserRepository', 'IPasswordHasher'],
-    },
+    RegisterUserUseCase,
+    GetProfileUseCase,
+    UpdateProfileUseCase,
   ],
-  exports: [RegisterUserUseCase, 'IUserRepository', 'IPasswordHasher'],
+  exports: [RegisterUserUseCase, GetProfileUseCase, UpdateProfileUseCase, 'IUserRepository', 'IPasswordHasher'],
 })
 export class UserModule {}
