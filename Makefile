@@ -1,19 +1,27 @@
-.PHONY: up down restart migrate build
+.PHONY: up down restart migrate build migration-generate migration-revert logs
+name ?= InitialSchema
+DC = docker compose --env-file back/.env
 
 up:
-	docker compose up -d
+	$(DC) up -d
 
 down:
-	docker compose down
+	$(DC) down
 
 restart:
-	docker compose restart
+	$(DC) restart
 
 build:
-	docker compose build
+	$(DC) build
 
 migrate:
-	docker compose exec api npm run migration:run
+	$(DC) exec api npm run migration:run
+
+migration-generate:
+	$(DC) exec api npm run migration:generate -- src/infrastructure/persistence/migrations/$(name)
+
+migration-revert:
+	$(DC) exec api npm run migration:revert
 
 logs:
-	docker compose logs -f
+	$(DC) logs -f
