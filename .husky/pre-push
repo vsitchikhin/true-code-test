@@ -1,1 +1,1 @@
-npm run test:e2e --prefix back
+npm run test:e2e:back

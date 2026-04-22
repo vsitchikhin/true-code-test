@@ -10,6 +10,7 @@ import { IPasswordHasher } from '@domain/services/password-hasher.interface';
 import { UserModule } from '@infrastructure/ioc/user.module';
 import { JwtStrategy } from '@infrastructure/security/jwt.strategy';
 import { NestJwtAuthService } from '@infrastructure/security/nest-jwt-auth.service';
+import { AuthController } from '@presentation/controllers/auth.controller';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NestJwtAuthService } from '@infrastructure/security/nest-jwt-auth.servi
       }),
     }),
   ],
+  controllers: [AuthController],
   providers: [
     JwtStrategy,
     {

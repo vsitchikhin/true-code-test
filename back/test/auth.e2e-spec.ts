@@ -1,35 +1,18 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 
 
 import { AppModule } from '@/app.module';
-import { PostImageOrmEntity } from '@infrastructure/persistence/typeorm/entities/post-image.orm-entity';
-import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
-import { UserOrmEntity } from '@infrastructure/persistence/typeorm/entities/user.orm-entity';
 
 describe('Authentication (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        // Импортируем основное приложение, но переопределяем БД на SQLite
-        AppModule,
-      ],
-    })
-      .overrideModule(TypeOrmModule)
-      .useModule(
-        TypeOrmModule.forRoot({
-          type: 'better-sqlite3',
-          database: ':memory:',
-          entities: [UserOrmEntity, PostOrmEntity, PostImageOrmEntity],
-          synchronize: true,
-        }),
-      )
-      .compile();
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
