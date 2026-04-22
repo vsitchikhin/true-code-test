@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import * as Joi from 'joi';
 
+import { AuthModule } from '@infrastructure/ioc/auth.module';
 import { UserModule } from '@infrastructure/ioc/user.module';
 
 @Module({
@@ -40,6 +41,7 @@ import { UserModule } from '@infrastructure/ioc/user.module';
     }),
 
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

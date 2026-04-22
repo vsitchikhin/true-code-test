@@ -1,2 +1,1 @@
-npm run lint --prefix back
 npx lint-staged

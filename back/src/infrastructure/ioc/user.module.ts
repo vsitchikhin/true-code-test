@@ -46,6 +46,6 @@ import { UserController } from '@presentation/controllers/user.controller';
       inject: ['IUserRepository', 'IPasswordHasher'],
     },
   ],
-  exports: [RegisterUserUseCase],
+  exports: [RegisterUserUseCase, 'IUserRepository', 'IPasswordHasher'],
 })
 export class UserModule {}

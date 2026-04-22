@@ -8,7 +8,8 @@
   },
   "lint-staged": {
     "back/**/*.ts": [
-      "npm run lint --prefix back"
+      "npm run lint --prefix back",
+      "npm run test --prefix back -- --findRelatedTests --passWithNoTests"
     ],
     "front/**/*.{ts,tsx}": [
       "npm run lint --prefix front"
