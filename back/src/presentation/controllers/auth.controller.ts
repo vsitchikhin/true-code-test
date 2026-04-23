@@ -14,7 +14,9 @@ import { LogoutUseCase } from '@application/use-cases/logout.use-case';
 import { RefreshTokenUseCase } from '@application/use-cases/refresh-token.use-case';
 import { JwtAuthGuard } from '@infrastructure/security/jwt-auth.guard';
 import { CurrentUser } from '@presentation/decorators/current-user.decorator';
+import { AuthResponseDto } from '@presentation/dtos/auth-response.dto';
 import { LoginDto } from '@presentation/dtos/login.dto';
+
 
 @ApiTags('auth')
 @Controller('auth')
@@ -28,7 +30,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Авторизация пользователя' })
-  @ApiResponse({ status: 200, description: 'Успешная авторизация' })
+  @ApiResponse({ status: 200, description: 'Успешная авторизация', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Неверные учетные данные' })
   async login(@Body() loginDto: LoginDto) {
     try {
@@ -41,7 +43,7 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Обновление токенов' })
-  @ApiResponse({ status: 200, description: 'Токены успешно обновлены' })
+  @ApiResponse({ status: 200, description: 'Токены успешно обновлены', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Невалидный refresh-токен' })
   async refresh(@Body('refreshToken') refreshToken: string) {
     return this.refreshTokenUseCase.execute({ refreshToken });

@@ -28,16 +28,14 @@ export class DeletePostUseCase {
       throw new ForbiddenException('You are not allowed to delete this post');
     }
 
-    // Удаляем файлы изображений
     for (const image of post.images) {
       try {
-        // Путь в БД обычно начинается с /uploads/, убираем его
         const relativePath = image.path.replace(/^\/uploads\//, '');
         const absolutePath = join(process.cwd(), 'uploads', relativePath);
         await unlink(absolutePath);
       } catch (error) {
-        console.error(`Failed to delete file: ${image.path}`, error);
         // Не кидаем ошибку, чтобы продолжить удаление поста из БД
+        console.error(`Failed to delete file: ${image.path}`, error);
       }
     }
 

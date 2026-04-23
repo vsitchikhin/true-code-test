@@ -24,14 +24,12 @@ export class UpdateAvatarUseCase {
       throw new NotFoundException('User not found');
     }
 
-    // Если у пользователя уже был аватар, удаляем старый файл
     if (user.avatarPath) {
       try {
         const relativePath = user.avatarPath.replace(/^\/uploads\//, '');
         const absolutePath = join(process.cwd(), 'uploads', relativePath);
         await unlink(absolutePath);
       } catch (error) {
-        // Игнорируем ошибку, если файл уже удален или не найден
         console.error(`Failed to delete old avatar: ${user.avatarPath}`, error);
       }
     }

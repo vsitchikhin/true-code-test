@@ -57,7 +57,6 @@ export class RefreshTokenUseCase {
       jti: randomUUID(),
     });
 
-    // Хешируем и сохраняем новый refresh-токен
     user.refreshTokenHash = await this.passwordHasher.hash(newRefreshToken);
     await this.userRepository.save(user);
 

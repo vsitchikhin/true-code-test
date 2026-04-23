@@ -21,7 +21,7 @@ import { AuthController } from '@presentation/controllers/auth.controller';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: '24h', // Токен будет жить сутки
+          expiresIn: '24h',
         },
       }),
     }),

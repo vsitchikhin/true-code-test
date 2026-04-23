@@ -112,7 +112,6 @@ export class PostController {
     @Body('removeImageIds') removeImageIds: string | string[],
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    // Body can send a single ID as a string or an array of strings
     const imagesToRemoveIds =
       typeof removeImageIds === 'string' ? [removeImageIds] : removeImageIds;
     const newImagePaths = files?.map((file) => `/uploads/${file.filename}`);

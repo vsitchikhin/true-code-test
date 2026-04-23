@@ -72,7 +72,6 @@ describe('Authentication (e2e)', () => {
   });
 
   it('/api/auth/refresh (POST) - Success', async () => {
-    // 1. Сначала логинимся
     const loginRes = await request(httpServer).post('/api/auth/login').send({
       identifier: testUser.email,
       password: testUser.password,
@@ -80,7 +79,6 @@ describe('Authentication (e2e)', () => {
 
     const { refreshToken } = loginRes.body as AuthResponse;
 
-    // 2. Обновляем токены
     const refreshRes = await request(httpServer)
       .post('/api/auth/refresh')
       .send({ refreshToken })
@@ -89,7 +87,6 @@ describe('Authentication (e2e)', () => {
     const refreshBody = refreshRes.body as AuthResponse;
     expect(refreshBody.accessToken).toBeDefined();
     expect(refreshBody.refreshToken).toBeDefined();
-    // Refresh-токен должен измениться (rotate)
     expect(refreshBody.refreshToken).not.toBe(refreshToken);
   });
 

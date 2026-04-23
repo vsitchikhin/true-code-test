@@ -1,4 +1,4 @@
-.PHONY: up down restart reup migrate build migration-generate migration-revert logs
+.PHONY: up down restart reup migrate build migration-generate migration-revert logs api-gen
 name ?= InitialSchema
 DC = docker compose --env-file back/.env
 
@@ -27,3 +27,6 @@ migration-revert:
 
 logs:
 	$(DC) logs -f
+
+api-gen:
+	npm run generate-api --prefix front

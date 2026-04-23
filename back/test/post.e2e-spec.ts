@@ -34,7 +34,6 @@ describe('Posts (e2e)', () => {
     await app.init();
     httpServer = app.getHttpServer();
 
-    // Регистрируем и логинимся
     await request(httpServer).post('/api/users/register').send(testUser);
 
     const loginRes = await request(httpServer).post('/api/auth/login').send({
@@ -51,7 +50,6 @@ describe('Posts (e2e)', () => {
 
   describe('POST /api/posts', () => {
     it('should create a post with an image', async () => {
-      // Создаем фейковый файл для теста
       const buffer = Buffer.from('fake image content');
 
       return request(httpServer)
@@ -93,7 +91,6 @@ describe('Posts (e2e)', () => {
 
   describe('PATCH /api/posts/:id', () => {
     it('should update post content and add images', async () => {
-      // 1. Создаем пост
       const createRes = await request(httpServer)
         .post('/api/posts')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -102,7 +99,6 @@ describe('Posts (e2e)', () => {
 
       const postId = createRes.body.id;
 
-      // 2. Обновляем его
       await request(httpServer)
         .patch(`/api/posts/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -110,7 +106,6 @@ describe('Posts (e2e)', () => {
         .attach('images', Buffer.from('img2'), 'img2.png')
         .expect(200);
 
-      // 3. Проверяем изменения через ленту
       const feedRes = await request(httpServer).get('/api/posts').expect(200);
 
       const updatedPost = feedRes.body.posts.find((p: any) => p.id === postId);
@@ -121,7 +116,6 @@ describe('Posts (e2e)', () => {
 
   describe('DELETE /api/posts/:id', () => {
     it('should delete own post', async () => {
-      // Сначала создаем пост
       const createRes = await request(httpServer)
         .post('/api/posts')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -130,13 +124,11 @@ describe('Posts (e2e)', () => {
 
       const postId = createRes.body.id;
 
-      // Удаляем его
       await request(httpServer)
         .delete(`/api/posts/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(204);
 
-      // Проверяем, что его больше нет
       const feedRes = await request(httpServer).get('/api/posts').expect(200);
 
       const deletedPost = feedRes.body.posts.find((p: any) => p.id === postId);

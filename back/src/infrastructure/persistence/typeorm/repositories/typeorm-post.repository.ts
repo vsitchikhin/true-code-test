@@ -27,7 +27,6 @@ export class TypeOrmPostRepository implements IPostRepository {
     ormPost.createdAt = post.createdAt;
     ormPost.updatedAt = post.updatedAt;
 
-    // Присваиваем пустой объект сущности с ID для TypeORM отношений
     ormPost.author = { id: post.authorId } as UserOrmEntity;
 
     ormPost.images = post.images.map((img) => {

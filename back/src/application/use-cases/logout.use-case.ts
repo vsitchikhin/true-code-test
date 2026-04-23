@@ -1,6 +1,6 @@
 import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 
-import { IUserRepository } from '@domain/repositories/user.repository.interface';
+import type { IUserRepository } from '@domain/repositories/user.repository.interface';
 
 export interface LogoutCommand {
   userId: string;

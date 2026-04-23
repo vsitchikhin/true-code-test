@@ -39,7 +39,6 @@ describe('Profile (e2e)', () => {
     await app.init();
     httpServer = app.getHttpServer();
 
-    // Регистрируем и логинимся, чтобы получить токен
     await request(httpServer).post('/api/users/register').send(testUser);
 
     const loginRes = await request(httpServer).post('/api/auth/login').send({
@@ -101,7 +100,6 @@ describe('Profile (e2e)', () => {
     });
 
     it('should return 409 if username is taken', async () => {
-      // Регистрируем другого пользователя
       await request(httpServer).post('/api/users/register').send({
         email: 'other@example.com',
         username: 'other_user',

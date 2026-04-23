@@ -54,14 +54,12 @@ export class UpdatePostUseCase {
       throw new BadRequestException('Post cannot have more than 10 images');
     }
 
-    // Удаляем помеченные изображения
     if (input.imagesToRemoveIds && input.imagesToRemoveIds.length > 0) {
       for (const imgId of input.imagesToRemoveIds) {
         const imgIndex = post.images.findIndex((img) => img.id === imgId);
         if (imgIndex !== -1) {
           const image = post.images[imgIndex];
 
-          // Удаляем файл
           try {
             const relativePath = image.path.replace(/^\/uploads\//, '');
             const absolutePath = join(process.cwd(), 'uploads', relativePath);
@@ -70,13 +68,11 @@ export class UpdatePostUseCase {
             console.error(`Failed to delete file: ${image.path}`, error);
           }
 
-          // Удаляем из списка
           post.images.splice(imgIndex, 1);
         }
       }
     }
 
-    // Добавляем новые изображения
     if (input.newImagePaths && input.newImagePaths.length > 0) {
       const startOrder = post.images.length;
       const newImages = input.newImagePaths.map(
