@@ -25,20 +25,26 @@
   transition: all 0.2s ease;
   color: #1f2937;
   outline: none;
-}
 
-.input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  &:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  }
+
+  &:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
 }
 
 .inputError {
   border-color: #ef4444;
-}
 
-.inputError:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  &:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  }
 }
 
 .errorText {
@@ -46,10 +52,4 @@
   color: #ef4444;
   margin-left: 4px;
   font-weight: 500;
-}
-
-.input:disabled {
-  background: #f9fafb;
-  color: #9ca3af;
-  cursor: not-allowed;
 }

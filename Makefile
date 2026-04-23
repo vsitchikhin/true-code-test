@@ -1,4 +1,4 @@
-.PHONY: up down restart reup migrate build migration-generate migration-revert logs api-gen
+.PHONY: up down restart reup migrate build migration-generate migration-revert logs api-gen seed
 name ?= InitialSchema
 DC = docker compose --env-file back/.env
 
@@ -30,3 +30,6 @@ logs:
 
 api-gen:
 	npm run generate-api --prefix front
+
+seed:
+	$(DC) exec api npx ts-node -r tsconfig-paths/register src/scripts/seed.ts

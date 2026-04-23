@@ -1,7 +1,7 @@
 import type { RouteProps } from 'react-router-dom';
 import { RegisterPage } from '@/pages/Register';
 import { LoginPage } from '@/pages/Login';
-import { PageLayout } from '@/shared/ui';
+import { HomePage } from '@/pages/Home';
 
 export type AppRoutesProps = RouteProps & {
   authOnly?: boolean;
@@ -27,7 +27,7 @@ export const RoutePath: Record<AppRoutesType, string> = {
 export const routeConfig: Record<AppRoutesType, AppRoutesProps> = {
   [AppRoutes.HOME]: {
     path: RoutePath[AppRoutes.HOME],
-    element: <PageLayout>Home Page (Coming Soon)</PageLayout>,
+    element: <HomePage />,
     authOnly: true,
   },
   [AppRoutes.LOGIN]: {

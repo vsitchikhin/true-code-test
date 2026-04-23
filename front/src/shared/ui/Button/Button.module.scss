@@ -9,49 +9,64 @@
   border: 1px solid transparent;
   outline: none;
   font-family: inherit;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
-.button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Variants */
 .primary {
   background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
-}
 
-.primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+  }
 }
 
 .secondary {
   background: #f3f4f6;
   color: #1f2937;
-}
 
-.secondary:hover:not(:disabled) {
-  background: #e5e7eb;
+  &:hover:not(:disabled) {
+    background: #e5e7eb;
+  }
 }
 
 .outline {
   background: transparent;
   border: 2px solid #e5e7eb;
   color: #374151;
+
+  &:hover:not(:disabled) {
+    border-color: #6366f1;
+    color: #6366f1;
+  }
 }
 
-.outline:hover:not(:disabled) {
-  border-color: #6366f1;
-  color: #6366f1;
+.ghost {
+  background: transparent;
+  color: #6b7280;
+
+  &:hover:not(:disabled) {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
 }
 
-/* Sizes */
+.xs {
+  padding: 5px 12px;
+  font-size: 12px;
+  gap: 4px;
+}
+
 .sm {
   padding: 8px 16px;
   font-size: 13px;
+  gap: 6px;
 }
 
 .md {
@@ -68,7 +83,6 @@
   width: 100%;
 }
 
-/* Loader */
 .loader {
   width: 20px;
   height: 20px;

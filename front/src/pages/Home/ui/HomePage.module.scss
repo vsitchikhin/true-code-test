@@ -1,0 +1,22 @@
+.pageWrapper {
+  background: #f4f5f7;
+  min-height: calc(100vh - 64px);
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 0;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.error {
+  padding: 14px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #dc2626;
+  font-size: 14px;
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '@/shared/ui';
 import { RegistrationForm } from '@/features/auth-by-credentials';
-import styles from './RegisterPage.module.css';
+import styles from './RegisterPage.module.scss';
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();

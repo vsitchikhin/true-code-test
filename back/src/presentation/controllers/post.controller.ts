@@ -17,6 +17,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { diskStorage } from 'multer';
 
@@ -27,6 +28,7 @@ import { UpdatePostUseCase } from '@application/use-cases/update-post.use-case';
 import { JwtAuthGuard } from '@infrastructure/security/jwt-auth.guard';
 import { CurrentUser } from '@presentation/decorators/current-user.decorator';
 
+@ApiTags('posts')
 @Controller('posts')
 export class PostController {
   constructor(
@@ -61,11 +63,7 @@ export class PostController {
     @Body('content') content: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    if (!files || files.length === 0) {
-      throw new BadRequestException('At least one image is required');
-    }
-
-    const imagePaths = files.map((file) => `/uploads/${file.filename}`);
+    const imagePaths = files?.map((file) => `/uploads/${file.filename}`) || [];
 
     return this.createPostUseCase.execute({
       authorId: userId,
@@ -75,6 +73,8 @@ export class PostController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Получение ленты постов' })
+  @ApiResponse({ status: 200, description: 'Успешное получение ленты' })
   async getFeed(@Query('page') page: string = '1', @Query('limit') limit: string = '10') {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);

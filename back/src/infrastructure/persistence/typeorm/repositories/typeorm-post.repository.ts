@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 
 import { PostImage } from '@domain/entities/post-image.entity';
 import { Post } from '@domain/entities/post.entity';
+import { User } from '@domain/entities/user.entity';
 import { IPostRepository } from '@domain/repositories/post.repository.interface';
 import { PostImageOrmEntity } from '@infrastructure/persistence/typeorm/entities/post-image.orm-entity';
 import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
@@ -80,7 +81,7 @@ export class TypeOrmPostRepository implements IPostRepository {
         (img) => new PostImage(img.id, ormPost.id, img.path, img.order, img.createdAt),
       ) || [];
 
-    return new Post(
+    const post = new Post(
       ormPost.id,
       ormPost.authorId,
       ormPost.content,
@@ -88,5 +89,21 @@ export class TypeOrmPostRepository implements IPostRepository {
       ormPost.createdAt,
       ormPost.updatedAt,
     );
+
+    if (ormPost.author) {
+      post.author = new User(
+        ormPost.author.id,
+        ormPost.author.email,
+        ormPost.author.username,
+        ormPost.author.passwordHash,
+        ormPost.author.phoneNumber,
+        ormPost.author.bio,
+        ormPost.author.avatarPath,
+        ormPost.author.refreshTokenHash,
+        ormPost.author.createdAt,
+      );
+    }
+
+    return post;
   }
 }

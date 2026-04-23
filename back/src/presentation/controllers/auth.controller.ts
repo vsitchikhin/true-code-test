@@ -7,11 +7,12 @@ import {
   UnauthorizedException,
   UseGuards,
   Res,
+  Req,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 
 import { LoginUseCase } from '@application/use-cases/login.use-case';
 import { LogoutUseCase } from '@application/use-cases/logout.use-case';
@@ -87,12 +88,24 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Токены успешно обновлены', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Невалидный refresh-токен' })
   async refresh(
-    @Body('refreshToken') refreshToken: string,
+    @Req() req: Request,
+    @Body('refreshToken') bodyRefreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.refreshTokenUseCase.execute({ refreshToken });
-    this.setCookies(res, result.accessToken, result.refreshToken);
-    return result;
+    const cookies = req.cookies as Record<string, string | undefined> | undefined;
+    const refreshToken = cookies?.refresh_token || bodyRefreshToken;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
+    try {
+      const result = await this.refreshTokenUseCase.execute({ refreshToken });
+      this.setCookies(res, result.accessToken, result.refreshToken);
+      return result;
+    } catch (error) {
+      throw new UnauthorizedException((error as Error).message);
+    }
   }
 
   @Post('logout')

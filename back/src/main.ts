@@ -17,7 +17,11 @@ async function bootstrap() {
   const cookieParser = await import('cookie-parser');
 
   app.use(cookieParser.default());
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.setGlobalPrefix('api');
 
   app.use('/uploads', express.static(join(process.cwd(), 'uploads')));

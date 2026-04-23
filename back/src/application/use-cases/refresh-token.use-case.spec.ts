@@ -1,10 +1,11 @@
-/* eslint-disable */
-import { RefreshTokenUseCase } from './refresh-token.use-case';
+import { UnauthorizedException } from '@nestjs/common';
+
+import { User } from '@domain/entities/user.entity';
 import { IUserRepository } from '@domain/repositories/user.repository.interface';
 import { IAuthService } from '@domain/services/auth-service.interface';
 import { IPasswordHasher } from '@domain/services/password-hasher.interface';
-import { User } from '@domain/entities/user.entity';
-import { UnauthorizedException } from '@nestjs/common';
+
+import { RefreshTokenUseCase } from './refresh-token.use-case';
 
 describe('RefreshTokenUseCase', () => {
   let useCase: RefreshTokenUseCase;
@@ -27,23 +28,27 @@ describe('RefreshTokenUseCase', () => {
     userRepository = {
       findById: jest.fn(),
       save: jest.fn(),
-    } as any;
+      findAll: jest.fn(),
+      findByEmail: jest.fn(),
+      findByPhoneNumber: jest.fn(),
+      findByUsername: jest.fn(),
+    };
 
     authService = {
       verifyRefreshToken: jest.fn(),
       generateAccessToken: jest.fn(),
       generateRefreshToken: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IAuthService>;
 
     passwordHasher = {
       compare: jest.fn(),
       hash: jest.fn(),
-    } as any;
+    };
 
     useCase = new RefreshTokenUseCase(userRepository, passwordHasher, authService);
   });
 
-  it('should refresh tokens successfully', async () => {
+  it('должен успешно обновить токены', async () => {
     authService.verifyRefreshToken.mockResolvedValue({ userId: 'user-id', username: 'testuser' });
     userRepository.findById.mockResolvedValue(mockUser);
     passwordHasher.compare.mockResolvedValue(true);
@@ -55,10 +60,11 @@ describe('RefreshTokenUseCase', () => {
 
     expect(result.accessToken).toBe('new-access');
     expect(result.refreshToken).toBe('new-refresh');
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(userRepository.save).toHaveBeenCalled();
   });
 
-  it('should throw UnauthorizedException if token is invalid', async () => {
+  it('должен выбросить UnauthorizedException, если токен невалиден', async () => {
     authService.verifyRefreshToken.mockResolvedValue(null);
 
     await expect(useCase.execute({ refreshToken: 'invalid' })).rejects.toThrow(
@@ -66,7 +72,7 @@ describe('RefreshTokenUseCase', () => {
     );
   });
 
-  it('should throw UnauthorizedException if token hash does not match', async () => {
+  it('должен выбросить UnauthorizedException, если хеш токена не совпадает', async () => {
     authService.verifyRefreshToken.mockResolvedValue({ userId: 'user-id', username: 'testuser' });
     userRepository.findById.mockResolvedValue(mockUser);
     passwordHasher.compare.mockResolvedValue(false);

@@ -7,7 +7,7 @@ import { Button, Input } from '@/shared/ui';
 import { useUserStore } from '@/entities/user';
 import { loginSchema } from '@/features/auth-by-credentials/model/login.schema';
 import type { LoginFormData } from '@/features/auth-by-credentials/model/login.schema';
-import styles from './LoginForm.module.css';
+import styles from './LoginForm.module.scss';
 
 interface LoginFormProps {
   onSuccess?: () => void;

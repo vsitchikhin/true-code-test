@@ -1,0 +1,78 @@
+.postList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  span {
+    font-size: 13px;
+    color: #9ca3af;
+  }
+}
+
+// Skeleton
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+$shimmer: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+
+.skeleton {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: $shimmer;
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  flex-shrink: 0;
+}
+
+.skeletonMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeletonLine {
+  height: 12px;
+  border-radius: 6px;
+  background: $shimmer;
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}

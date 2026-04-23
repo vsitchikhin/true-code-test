@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '@/shared/ui';
 import { LoginForm } from '@/features/auth-by-credentials';
-import styles from './LoginPage.module.css';
+import styles from './LoginPage.module.scss';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();

@@ -7,7 +7,7 @@ test.describe('Авторизация', () => {
   });
 
   test('успешный вход после регистрации', async ({ page }) => {
-    const uniqueUsername = `user_${Date.now()}`;
+    const uniqueUsername = `u_${Date.now().toString().slice(-8)}`;
     const uniqueEmail = `${uniqueUsername}@test.com`;
     const uniquePhone = `+7${Math.floor(1000000000 + Math.random() * 9000000000)}`;
     const password = 'password123';
@@ -29,10 +29,10 @@ test.describe('Авторизация', () => {
     await page.getByRole('button', { name: /Войти/i }).click();
 
     // Ждем редиректа на главную
-    await expect(page).toHaveURL(/\/$/, { timeout: 10000 });
+    await expect(page).toHaveURL(/\/$/);
 
-    // Проверяем что мы на главной (пока там заглушка)
-    await expect(page.getByText(/Home Page/i)).toBeVisible();
+    // Проверяем что мы на главной
+    await expect(page.getByRole('banner')).toBeVisible();
   });
 
   test('ошибка при неверных данных', async ({ page }) => {

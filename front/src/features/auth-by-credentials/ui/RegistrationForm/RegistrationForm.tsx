@@ -6,7 +6,7 @@ import { api } from '@/shared/api';
 import { Button, Input } from '@/shared/ui';
 import { registrationSchema } from '@/features/auth-by-credentials/model/registration.schema';
 import type { RegistrationFormData } from '@/features/auth-by-credentials/model/registration.schema';
-import styles from './RegistrationForm.module.css';
+import styles from './RegistrationForm.module.scss';
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
