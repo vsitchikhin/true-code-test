@@ -1,1 +1,1 @@
-export * from './Input';
+export * from '@/shared/ui/Input/Input';

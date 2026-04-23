@@ -1,3 +1,3 @@
-export * from './Button';
-export * from './Input';
-export * from './Card';
+export * from '@/shared/ui/Button/Button';
+export * from '@/shared/ui/Input/Input';
+export * from '@/shared/ui/Card/Card';

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { UserResponseDto } from '@/shared/api';
-import type { UserSchema } from './types';
+import type { UserSchema } from '@/entities/user/model/types';
 
 interface UserStore extends UserSchema {
   setAuthData: (data: UserResponseDto) => void;

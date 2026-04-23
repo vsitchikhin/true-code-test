@@ -1,2 +1,2 @@
-export * from './model/store';
-export * from './model/types';
+export * from '@/entities/user/model/store';
+export * from '@/entities/user/model/types';

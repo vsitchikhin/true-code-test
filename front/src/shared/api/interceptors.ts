@@ -1,6 +1,6 @@
 import type { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import type { AuthResponseDto } from './generated/api';
-import { api } from './index';
+import type { AuthResponseDto } from '@/shared/api/generated/api';
+import { api } from '@/shared/api/index';
 
 let accessToken: string | null = null;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId, forwardRef } from 'react';
 import styles from './Input.module.css';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -7,29 +7,29 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   fullWidth?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({
-  label,
-  error,
-  fullWidth = false,
-  className = '',
-  id,
-  ...props
-}) => {
-  const containerClasses = [styles.container, fullWidth ? styles.fullWidth : '', className].join(
-    ' ',
-  );
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ label, error, fullWidth = false, className = '', id, ...props }, ref) => {
+    const generatedId = useId();
+    const inputId = id || generatedId;
 
-  const inputClasses = [styles.input, error ? styles.inputError : ''].join(' ');
+    const containerClasses = [styles.container, fullWidth ? styles.fullWidth : '', className].join(
+      ' ',
+    );
 
-  return (
-    <div className={containerClasses}>
-      {label && (
-        <label htmlFor={id} className={styles.label}>
-          {label}
-        </label>
-      )}
-      <input id={id} className={inputClasses} {...props} />
-      {error && <span className={styles.errorText}>{error}</span>}
-    </div>
-  );
-};
+    const inputClasses = [styles.input, error ? styles.inputError : ''].join(' ');
+
+    return (
+      <div className={containerClasses}>
+        {label && (
+          <label htmlFor={inputId} className={styles.label}>
+            {label}
+          </label>
+        )}
+        <input id={inputId} className={inputClasses} ref={ref} {...props} />
+        {error && <span className={styles.errorText}>{error}</span>}
+      </div>
+    );
+  },
+);
+
+Input.displayName = 'Input';
