@@ -39,6 +39,9 @@ services:
       - BACKEND_URL=http://api:3000
     depends_on:
       - api
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/node_modules
 
 volumes:
   db:

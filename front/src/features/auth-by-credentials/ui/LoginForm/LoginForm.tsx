@@ -4,29 +4,35 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { api } from '@/shared/api';
 import { Button, Input } from '@/shared/ui';
-import { registrationSchema } from '@/features/auth-by-credentials/model/registration.schema';
-import type { RegistrationFormData } from '@/features/auth-by-credentials/model/registration.schema';
-import styles from './RegistrationForm.module.css';
+import { useUserStore } from '@/entities/user';
+import { loginSchema } from '@/features/auth-by-credentials/model/login.schema';
+import type { LoginFormData } from '@/features/auth-by-credentials/model/login.schema';
+import styles from './LoginForm.module.css';
 
-interface RegistrationFormProps {
+interface LoginFormProps {
   onSuccess?: () => void;
 }
 
-export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [serverError, setServerError] = React.useState<string | null>(null);
+  const setAuthData = useUserStore((state) => state.setAuthData);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegistrationFormData>({
-    resolver: zodResolver(registrationSchema),
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: RegistrationFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
       setServerError(null);
-      await api.api.userControllerRegister(data);
+      await api.api.authControllerLogin(data);
+
+      const meResponse = await api.api.userControllerGetMe();
+      setAuthData(meResponse.data);
+
       onSuccess?.();
     } catch (error: unknown) {
       const message = axios.isAxiosError(error)
@@ -38,32 +44,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess })
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      <h2 className={styles.title}>Регистрация</h2>
+      <h2 className={styles.title}>Вход в аккаунт</h2>
 
       {serverError && <div className={styles.serverError}>{serverError}</div>}
 
       <Input
-        label="Имя пользователя"
-        placeholder="Введите имя пользователя"
-        {...register('username')}
-        error={errors.username?.message}
-        fullWidth
-      />
-
-      <Input
-        label="Email"
-        type="email"
-        placeholder="example@mail.com"
-        {...register('email')}
-        error={errors.email?.message}
-        fullWidth
-      />
-
-      <Input
-        label="Телефон"
-        placeholder="+79991234567"
-        {...register('phoneNumber')}
-        error={errors.phoneNumber?.message}
+        label="Логин, email или телефон"
+        placeholder="Введите логин, email или телефон"
+        {...register('identifier')}
+        error={errors.identifier?.message}
         fullWidth
       />
 
@@ -77,7 +66,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess })
       />
 
       <Button type="submit" fullWidth isLoading={isSubmitting}>
-        Создать аккаунт
+        Войти
       </Button>
     </form>
   );

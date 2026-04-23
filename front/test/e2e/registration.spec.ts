@@ -2,15 +2,15 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Регистрация', () => {
   test.beforeEach(async ({ page }) => {
-    // eslint-disable-next-line no-console
-    page.on('console', (msg) => console.log('BROWSER LOG:', msg.text()));
-    // eslint-disable-next-line no-console
-    page.on('pageerror', (err) => console.log('BROWSER ERROR:', err.message));
+    page.on('console', (msg) => console.error('BROWSER LOG:', msg.text()));
+    page.on('pageerror', (err) => console.error('BROWSER ERROR:', err.message));
   });
 
   test('успешная регистрация нового пользователя', async ({ page }) => {
     const uniqueUsername = `user_${Date.now()}`;
     const uniqueEmail = `${uniqueUsername}@test.com`;
+
+    const uniquePhone = `+7${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
     // Переходим на страницу регистрации
     await page.goto('/register');
@@ -18,7 +18,7 @@ test.describe('Регистрация', () => {
     // Заполняем форму
     await page.getByLabel(/Имя пользователя/i).fill(uniqueUsername);
     await page.getByLabel(/Email/i).fill(uniqueEmail);
-    await page.getByLabel(/Телефон/i).fill('+79991112233');
+    await page.getByLabel(/Телефон/i).fill(uniquePhone);
     await page.getByLabel(/Пароль/i).fill('password123');
 
     // Сабмитим

@@ -1,6 +1,15 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useUserStore } from '@/entities/user/model/store';
 import type { UserResponseDto } from '@/shared/api';
+import { api } from '@/shared/api';
+
+vi.mock('@/shared/api', () => ({
+  api: {
+    api: {
+      userControllerGetMe: vi.fn(),
+    },
+  },
+}));
 
 const mockUser: UserResponseDto = {
   id: '1',
@@ -12,9 +21,8 @@ const mockUser: UserResponseDto = {
 
 describe('useUserStore', () => {
   beforeEach(() => {
-    // Очищаем стор и localStorage перед каждым тестом
     useUserStore.setState({ authData: undefined, isMounted: false });
-    localStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('should have initial state', () => {
@@ -23,26 +31,34 @@ describe('useUserStore', () => {
     expect(state.isMounted).toBe(false);
   });
 
-  it('should set auth data and save to localStorage', () => {
+  it('should set auth data', () => {
     useUserStore.getState().setAuthData(mockUser);
-
     expect(useUserStore.getState().authData).toEqual(mockUser);
-    expect(localStorage.getItem('user')).toBe(JSON.stringify(mockUser));
   });
 
   it('should clear data on logout', () => {
     useUserStore.getState().setAuthData(mockUser);
     useUserStore.getState().logout();
-
     expect(useUserStore.getState().authData).toBeUndefined();
-    expect(localStorage.getItem('user')).toBeNull();
   });
 
-  it('should init data from localStorage', () => {
-    localStorage.setItem('user', JSON.stringify(mockUser));
-    useUserStore.getState()._initAuthData();
+  it('should init data from API success', async () => {
+    vi.mocked(api.api.userControllerGetMe).mockResolvedValueOnce({
+      data: mockUser,
+    } as never);
+
+    await useUserStore.getState().initAuth();
 
     expect(useUserStore.getState().authData).toEqual(mockUser);
+    expect(useUserStore.getState().isMounted).toBe(true);
+  });
+
+  it('should set isMounted on API error', async () => {
+    vi.mocked(api.api.userControllerGetMe).mockRejectedValueOnce(new Error('401'));
+
+    await useUserStore.getState().initAuth();
+
+    expect(useUserStore.getState().authData).toBeUndefined();
     expect(useUserStore.getState().isMounted).toBe(true);
   });
 });

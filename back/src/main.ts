@@ -14,7 +14,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  const cookieParser = await import('cookie-parser');
 
+  app.use(cookieParser.default());
   app.use(helmet());
   app.setGlobalPrefix('api');
 

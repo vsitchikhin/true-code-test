@@ -1,7 +1,7 @@
 import { Api } from '@/shared/api/generated/api';
 
 export const api = new Api({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || '',
   withCredentials: true,
 });
 

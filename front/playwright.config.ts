@@ -2,15 +2,18 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './test/e2e',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://127.0.0.1:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+  },
+  expect: {
+    timeout: 10000,
   },
   projects: [
     {
@@ -28,7 +31,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    url: 'http://127.0.0.1:5173',
+    reuseExistingServer: true,
   },
 });

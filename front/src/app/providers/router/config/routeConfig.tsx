@@ -1,8 +1,11 @@
 import type { RouteProps } from 'react-router-dom';
 import { RegisterPage } from '@/pages/Register';
+import { LoginPage } from '@/pages/Login';
+import { PageLayout } from '@/shared/ui';
 
 export type AppRoutesProps = RouteProps & {
   authOnly?: boolean;
+  guestOnly?: boolean;
 };
 
 export const AppRoutes = {
@@ -24,15 +27,18 @@ export const RoutePath: Record<AppRoutesType, string> = {
 export const routeConfig: Record<AppRoutesType, AppRoutesProps> = {
   [AppRoutes.HOME]: {
     path: RoutePath[AppRoutes.HOME],
-    element: <div>Home Page (Coming Soon)</div>,
+    element: <PageLayout>Home Page (Coming Soon)</PageLayout>,
+    authOnly: true,
   },
   [AppRoutes.LOGIN]: {
     path: RoutePath[AppRoutes.LOGIN],
-    element: <div>Login Page (Coming Soon)</div>,
+    element: <LoginPage />,
+    guestOnly: true,
   },
   [AppRoutes.REGISTER]: {
     path: RoutePath[AppRoutes.REGISTER],
     element: <RegisterPage />,
+    guestOnly: true,
   },
   [AppRoutes.NOT_FOUND]: {
     path: RoutePath[AppRoutes.NOT_FOUND],

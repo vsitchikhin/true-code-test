@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { api } from '@/shared/api';
 import type { UserResponseDto } from '@/shared/api';
 import type { UserSchema } from '@/entities/user/model/types';
 
@@ -6,6 +7,7 @@ interface UserStore extends UserSchema {
   setAuthData: (data: UserResponseDto) => void;
   logout: () => void;
   _initAuthData: () => void;
+  initAuth: () => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>((set) => ({
@@ -14,19 +16,24 @@ export const useUserStore = create<UserStore>((set) => ({
 
   setAuthData: (data) => {
     set({ authData: data });
-    localStorage.setItem('user', JSON.stringify(data));
   },
 
   logout: () => {
     set({ authData: undefined });
-    localStorage.removeItem('user');
+  },
+
+  initAuth: async () => {
+    try {
+      const response = await api.api.userControllerGetMe();
+      set({ authData: response.data });
+    } catch {
+      set({ authData: undefined });
+    } finally {
+      set({ isMounted: true });
+    }
   },
 
   _initAuthData: () => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      set({ authData: JSON.parse(user) });
-    }
     set({ isMounted: true });
   },
 }));
