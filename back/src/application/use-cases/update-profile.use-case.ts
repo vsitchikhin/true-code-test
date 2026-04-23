@@ -15,7 +15,7 @@ export class UpdateProfileUseCase {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(command: UpdateProfileCommand): Promise<User> {
     const user = await this.userRepository.findById(command.userId);

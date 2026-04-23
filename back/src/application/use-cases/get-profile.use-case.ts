@@ -8,7 +8,7 @@ export class GetProfileUseCase {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(userId: string): Promise<User> {
     const user = await this.userRepository.findById(userId);

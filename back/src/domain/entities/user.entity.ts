@@ -9,5 +9,5 @@ export class User {
     public avatarPath: string | null = null,
     public refreshTokenHash: string | null = null,
     public readonly createdAt: Date = new Date(),
-  ) { }
+  ) {}
 }

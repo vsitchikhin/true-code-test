@@ -35,16 +35,12 @@ describe('Posts (e2e)', () => {
     httpServer = app.getHttpServer();
 
     // Регистрируем и логинимся
-    await request(httpServer)
-      .post('/api/users/register')
-      .send(testUser);
+    await request(httpServer).post('/api/users/register').send(testUser);
 
-    const loginRes = await request(httpServer)
-      .post('/api/auth/login')
-      .send({
-        identifier: testUser.email,
-        password: testUser.password,
-      });
+    const loginRes = await request(httpServer).post('/api/auth/login').send({
+      identifier: testUser.email,
+      password: testUser.password,
+    });
 
     accessToken = (loginRes.body as LoginResponse).accessToken;
   });
@@ -115,9 +111,7 @@ describe('Posts (e2e)', () => {
         .expect(200);
 
       // 3. Проверяем изменения через ленту
-      const feedRes = await request(httpServer)
-        .get('/api/posts')
-        .expect(200);
+      const feedRes = await request(httpServer).get('/api/posts').expect(200);
 
       const updatedPost = feedRes.body.posts.find((p: any) => p.id === postId);
       expect(updatedPost.content).toBe('Updated content');
@@ -143,9 +137,7 @@ describe('Posts (e2e)', () => {
         .expect(204);
 
       // Проверяем, что его больше нет
-      const feedRes = await request(httpServer)
-        .get('/api/posts')
-        .expect(200);
+      const feedRes = await request(httpServer).get('/api/posts').expect(200);
 
       const deletedPost = feedRes.body.posts.find((p: any) => p.id === postId);
       expect(deletedPost).toBeUndefined();

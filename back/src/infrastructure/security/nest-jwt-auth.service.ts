@@ -5,7 +5,7 @@ import { IAuthService, TokenPayload } from '@domain/services/auth-service.interf
 
 @Injectable()
 export class NestJwtAuthService implements IAuthService {
-  constructor(private readonly jwtService: JwtService) { }
+  constructor(private readonly jwtService: JwtService) {}
 
   async generateAccessToken(payload: TokenPayload): Promise<string> {
     return this.jwtService.signAsync(payload, { expiresIn: '15m' });

@@ -47,7 +47,7 @@ describe('GetFeedUseCase', () => {
     expect(result.meta.total).toBe(25);
     expect(result.meta.totalPages).toBe(3); // ceil(25/10)
     expect(result.meta.page).toBe(1);
-    
+
     expect(postRepository.findPaginated).toHaveBeenCalledWith(1, 10);
   });
 

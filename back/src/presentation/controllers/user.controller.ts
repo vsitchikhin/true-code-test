@@ -1,12 +1,23 @@
 import { randomUUID } from 'node:crypto';
 import { extname } from 'path';
 
-import { Controller, Post, Get, Patch, Body, BadRequestException, UsePipes, ValidationPipe, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Body,
+  BadRequestException,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { diskStorage } from 'multer';
-
 
 import { GetProfileUseCase } from '@application/use-cases/get-profile.use-case';
 import { RegisterUserUseCase } from '@application/use-cases/register-user.use-case';
@@ -26,7 +37,7 @@ export class UserController {
     private readonly getProfileUseCase: GetProfileUseCase,
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly updateAvatarUseCase: UpdateAvatarUseCase,
-  ) { }
+  ) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Регистрация нового пользователя' })

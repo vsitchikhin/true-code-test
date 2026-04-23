@@ -82,10 +82,12 @@ describe('UpdatePostUseCase', () => {
     const mockPost = createMockPost();
     postRepository.findById.mockResolvedValue(mockPost);
 
-    await expect(useCase.execute({
-      postId: 'post-id',
-      authorId: 'intruder-id',
-      content: 'Hacked',
-    })).rejects.toThrow(ForbiddenException);
+    await expect(
+      useCase.execute({
+        postId: 'post-id',
+        authorId: 'intruder-id',
+        content: 'Hacked',
+      }),
+    ).rejects.toThrow(ForbiddenException);
   });
 });

@@ -40,16 +40,12 @@ describe('Profile (e2e)', () => {
     httpServer = app.getHttpServer();
 
     // Регистрируем и логинимся, чтобы получить токен
-    await request(httpServer)
-      .post('/api/users/register')
-      .send(testUser);
+    await request(httpServer).post('/api/users/register').send(testUser);
 
-    const loginRes = await request(httpServer)
-      .post('/api/auth/login')
-      .send({
-        identifier: testUser.email,
-        password: testUser.password,
-      });
+    const loginRes = await request(httpServer).post('/api/auth/login').send({
+      identifier: testUser.email,
+      password: testUser.password,
+    });
 
     accessToken = (loginRes.body as LoginResponse).accessToken;
   });
@@ -73,9 +69,7 @@ describe('Profile (e2e)', () => {
     });
 
     it('should return 401 if no token provided', () => {
-      return request(httpServer)
-        .get('/api/users/me')
-        .expect(401);
+      return request(httpServer).get('/api/users/me').expect(401);
     });
   });
 
@@ -108,14 +102,12 @@ describe('Profile (e2e)', () => {
 
     it('should return 409 if username is taken', async () => {
       // Регистрируем другого пользователя
-      await request(httpServer)
-        .post('/api/users/register')
-        .send({
-          email: 'other@example.com',
-          username: 'other_user',
-          password: 'Password123!',
-          phoneNumber: '79991112233',
-        });
+      await request(httpServer).post('/api/users/register').send({
+        email: 'other@example.com',
+        username: 'other_user',
+        password: 'Password123!',
+        phoneNumber: '79991112233',
+      });
 
       return request(httpServer)
         .patch('/api/users/me')
@@ -128,7 +120,7 @@ describe('Profile (e2e)', () => {
   describe('PATCH /api/users/avatar', () => {
     it('should upload user avatar', async () => {
       const buffer = Buffer.from('avatar content');
-      
+
       const res = await request(httpServer)
         .patch('/api/users/avatar')
         .set('Authorization', `Bearer ${accessToken}`)

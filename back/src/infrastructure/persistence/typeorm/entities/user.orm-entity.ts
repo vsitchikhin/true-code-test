@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 
-
 import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
 
 @Entity('users')

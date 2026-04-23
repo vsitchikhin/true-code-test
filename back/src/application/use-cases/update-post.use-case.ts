@@ -43,7 +43,7 @@ export class UpdatePostUseCase {
         const imgIndex = post.images.findIndex((img) => img.id === imgId);
         if (imgIndex !== -1) {
           const image = post.images[imgIndex];
-          
+
           // Удаляем файл
           try {
             const relativePath = image.path.replace(/^\/uploads\//, '');
@@ -62,8 +62,8 @@ export class UpdatePostUseCase {
     // Добавляем новые изображения
     if (input.newImagePaths && input.newImagePaths.length > 0) {
       const startOrder = post.images.length;
-      const newImages = input.newImagePaths.map((path, index) => 
-        new PostImage(randomUUID(), post.id, path, startOrder + index)
+      const newImages = input.newImagePaths.map(
+        (path, index) => new PostImage(randomUUID(), post.id, path, startOrder + index),
       );
       post.images.push(...newImages);
     }

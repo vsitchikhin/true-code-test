@@ -78,7 +78,9 @@ describe('RegisterUserUseCase', () => {
     userRepository.findByEmail.mockResolvedValue(null);
     userRepository.findByUsername.mockResolvedValue({} as User);
 
-    await expect(useCase.execute(dto)).rejects.toThrow('Пользователь с таким именем пользователя уже существует');
+    await expect(useCase.execute(dto)).rejects.toThrow(
+      'Пользователь с таким именем пользователя уже существует',
+    );
   });
 
   it('should throw error when phone number already exists', async () => {
@@ -93,6 +95,8 @@ describe('RegisterUserUseCase', () => {
     userRepository.findByUsername.mockResolvedValue(null);
     userRepository.findByPhoneNumber.mockResolvedValue({} as User);
 
-    await expect(useCase.execute(dto)).rejects.toThrow('Пользователь с таким номером телефона уже существует');
+    await expect(useCase.execute(dto)).rejects.toThrow(
+      'Пользователь с таким номером телефона уже существует',
+    );
   });
 });

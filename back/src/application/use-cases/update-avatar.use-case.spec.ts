@@ -18,7 +18,7 @@ describe('UpdateAvatarUseCase', () => {
     'hash',
     '7000',
     null,
-    '/uploads/avatars/old.png'
+    '/uploads/avatars/old.png',
   );
 
   beforeEach(() => {
@@ -47,9 +47,11 @@ describe('UpdateAvatarUseCase', () => {
   it('should throw NotFoundException if user not found', async () => {
     userRepository.findById.mockResolvedValue(null);
 
-    await expect(useCase.execute({
-      userId: 'ghost-id',
-      avatarPath: 'path',
-    })).rejects.toThrow(NotFoundException);
+    await expect(
+      useCase.execute({
+        userId: 'ghost-id',
+        avatarPath: 'path',
+      }),
+    ).rejects.toThrow(NotFoundException);
   });
 });

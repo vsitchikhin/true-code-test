@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto';
 
 import { Injectable, Inject } from '@nestjs/common';
 
-
 import { User } from '@domain/entities/user.entity';
 import type { IUserRepository } from '@domain/repositories/user.repository.interface';
 import type { IPasswordHasher } from '@domain/services/password-hasher.interface';
@@ -21,7 +20,7 @@ export class RegisterUserUseCase {
     private readonly userRepository: IUserRepository,
     @Inject('IPasswordHasher')
     private readonly passwordHasher: IPasswordHasher,
-  ) { }
+  ) {}
 
   async execute(command: RegisterUserCommand): Promise<User> {
     const existingEmail = await this.userRepository.findByEmail(command.email);

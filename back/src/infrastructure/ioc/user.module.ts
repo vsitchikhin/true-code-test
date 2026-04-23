@@ -16,9 +16,6 @@ import { TypeOrmUserRepository } from '@infrastructure/persistence/typeorm/repos
 import { BcryptHasher } from '@infrastructure/security/bcrypt-hasher';
 import { UserController } from '@presentation/controllers/user.controller';
 
-
-
-
 @Module({
   imports: [TypeOrmModule.forFeature([UserOrmEntity, PostOrmEntity, PostImageOrmEntity])],
   controllers: [UserController],
@@ -44,6 +41,13 @@ import { UserController } from '@presentation/controllers/user.controller';
     UpdateProfileUseCase,
     UpdateAvatarUseCase,
   ],
-  exports: [RegisterUserUseCase, GetProfileUseCase, UpdateProfileUseCase, UpdateAvatarUseCase, 'IUserRepository', 'IPasswordHasher'],
+  exports: [
+    RegisterUserUseCase,
+    GetProfileUseCase,
+    UpdateProfileUseCase,
+    UpdateAvatarUseCase,
+    'IUserRepository',
+    'IPasswordHasher',
+  ],
 })
 export class UserModule {}

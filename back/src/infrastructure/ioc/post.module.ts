@@ -12,9 +12,7 @@ import { TypeOrmPostRepository } from '@infrastructure/persistence/typeorm/repos
 import { PostController } from '@presentation/controllers/post.controller';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([PostOrmEntity, PostImageOrmEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([PostOrmEntity, PostImageOrmEntity])],
   providers: [
     {
       provide: IPostRepository,

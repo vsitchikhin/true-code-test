@@ -6,9 +6,7 @@ import { UserOrmEntity } from '@infrastructure/persistence/typeorm/entities/user
 import { UserMapper } from '@infrastructure/persistence/typeorm/mappers/user.mapper';
 
 export class TypeOrmUserRepository implements IUserRepository {
-  constructor(
-    private readonly ormRepository: Repository<UserOrmEntity>,
-  ) { }
+  constructor(private readonly ormRepository: Repository<UserOrmEntity>) {}
 
   async save(user: User): Promise<User> {
     const ormEntity = UserMapper.toOrm(user);

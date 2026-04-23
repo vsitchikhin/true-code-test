@@ -5,20 +5,26 @@
   "description": "Fullstack project with Clean Architecture",
   "scripts": {
     "prepare": "husky",
+    "format": "prettier --write .",
     "test:e2e:back": "npm run test:e2e --prefix back",
     "test:e2e:front": "npm run test:e2e --prefix front"
   },
   "lint-staged": {
+    "**/*.{ts,tsx,js,json,md}": [
+      "prettier --write"
+    ],
     "back/**/*.ts": [
       "npm run lint --prefix back",
       "npm run test --prefix back -- --findRelatedTests --passWithNoTests"
     ],
     "front/**/*.{ts,tsx}": [
-      "npm run lint --prefix front"
+      "npm run lint --prefix front",
+      "npm run test:unit --prefix front -- --passWithNoTests"
     ]
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^15.4.3"
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.8.3"
   }
 }

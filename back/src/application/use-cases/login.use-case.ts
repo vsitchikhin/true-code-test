@@ -30,7 +30,7 @@ export class LoginUseCase {
     private readonly passwordHasher: IPasswordHasher,
     @Inject('IAuthService')
     private readonly authService: IAuthService,
-  ) { }
+  ) {}
 
   async execute(command: LoginCommand): Promise<LoginResponse> {
     let user = await this.userRepository.findByEmail(command.identifier);

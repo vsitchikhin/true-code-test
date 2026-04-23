@@ -7,7 +7,9 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   @Length(3, 20)
-  @Matches(/^[a-zA-Z0-9_]+$/, { message: 'Username can only contain letters, numbers and underscores' })
+  @Matches(/^[a-zA-Z0-9_]+$/, {
+    message: 'Username can only contain letters, numbers and underscores',
+  })
   username?: string;
 
   @ApiPropertyOptional({ example: 'I am a software engineer' })

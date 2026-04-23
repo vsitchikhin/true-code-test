@@ -24,7 +24,7 @@ export class RefreshTokenUseCase {
     private readonly passwordHasher: IPasswordHasher,
     @Inject('IAuthService')
     private readonly authService: IAuthService,
-  ) { }
+  ) {}
 
   async execute(command: RefreshTokenCommand): Promise<RefreshTokenResponse> {
     const payload = await this.authService.verifyRefreshToken(command.refreshToken);

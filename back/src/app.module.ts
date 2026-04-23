@@ -15,11 +15,27 @@ import { UserModule } from '@infrastructure/ioc/user.module';
       envFilePath: '.env',
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
-        DB_HOST: Joi.string().when('NODE_ENV', { is: 'test', then: Joi.optional(), otherwise: Joi.required() }),
+        DB_HOST: Joi.string().when('NODE_ENV', {
+          is: 'test',
+          then: Joi.optional(),
+          otherwise: Joi.required(),
+        }),
         DB_PORT: Joi.number().default(5432),
-        DB_USER: Joi.string().when('NODE_ENV', { is: 'test', then: Joi.optional(), otherwise: Joi.required() }),
-        DB_PASSWORD: Joi.string().when('NODE_ENV', { is: 'test', then: Joi.optional(), otherwise: Joi.required() }),
-        DB_NAME: Joi.string().when('NODE_ENV', { is: 'test', then: Joi.optional(), otherwise: Joi.required() }),
+        DB_USER: Joi.string().when('NODE_ENV', {
+          is: 'test',
+          then: Joi.optional(),
+          otherwise: Joi.required(),
+        }),
+        DB_PASSWORD: Joi.string().when('NODE_ENV', {
+          is: 'test',
+          then: Joi.optional(),
+          otherwise: Joi.required(),
+        }),
+        DB_NAME: Joi.string().when('NODE_ENV', {
+          is: 'test',
+          then: Joi.optional(),
+          otherwise: Joi.required(),
+        }),
         JWT_SECRET: Joi.string().required(),
         PORT: Joi.number().default(3000),
         ALLOWED_ORIGINS: Joi.string().required(),
@@ -60,4 +76,4 @@ import { UserModule } from '@infrastructure/ioc/user.module';
     PostModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

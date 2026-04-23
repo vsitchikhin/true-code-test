@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import request from 'supertest';
 
-
 import { AppModule } from '@/app.module';
 
 describe('Authentication (e2e)', () => {
@@ -45,7 +44,6 @@ describe('Authentication (e2e)', () => {
   }
 
   it('/api/users/register (POST) - Success', () => {
-     
     return request(httpServer)
       .post('/api/users/register')
       .send(testUser)
@@ -58,7 +56,6 @@ describe('Authentication (e2e)', () => {
   });
 
   it('/api/auth/login (POST) - Success', () => {
-     
     return request(httpServer)
       .post('/api/auth/login')
       .send({
@@ -76,12 +73,10 @@ describe('Authentication (e2e)', () => {
 
   it('/api/auth/refresh (POST) - Success', async () => {
     // 1. Сначала логинимся
-    const loginRes = await request(httpServer)
-      .post('/api/auth/login')
-      .send({
-        identifier: testUser.email,
-        password: testUser.password,
-      });
+    const loginRes = await request(httpServer).post('/api/auth/login').send({
+      identifier: testUser.email,
+      password: testUser.password,
+    });
 
     const { refreshToken } = loginRes.body as AuthResponse;
 
@@ -99,7 +94,6 @@ describe('Authentication (e2e)', () => {
   });
 
   it('/api/auth/login (POST) - Success by Phone', () => {
-     
     return request(httpServer)
       .post('/api/auth/login')
       .send({
@@ -114,7 +108,6 @@ describe('Authentication (e2e)', () => {
   });
 
   it('/api/auth/login (POST) - Failure (Wrong Password)', () => {
-     
     return request(httpServer)
       .post('/api/auth/login')
       .send({

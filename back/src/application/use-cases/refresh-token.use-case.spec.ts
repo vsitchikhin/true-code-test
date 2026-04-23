@@ -20,7 +20,7 @@ describe('RefreshTokenUseCase', () => {
     '7000',
     null,
     null,
-    'old-refresh-hash'
+    'old-refresh-hash',
   );
 
   beforeEach(() => {
@@ -61,8 +61,9 @@ describe('RefreshTokenUseCase', () => {
   it('should throw UnauthorizedException if token is invalid', async () => {
     authService.verifyRefreshToken.mockResolvedValue(null);
 
-    await expect(useCase.execute({ refreshToken: 'invalid' }))
-      .rejects.toThrow(UnauthorizedException);
+    await expect(useCase.execute({ refreshToken: 'invalid' })).rejects.toThrow(
+      UnauthorizedException,
+    );
   });
 
   it('should throw UnauthorizedException if token hash does not match', async () => {
@@ -70,7 +71,8 @@ describe('RefreshTokenUseCase', () => {
     userRepository.findById.mockResolvedValue(mockUser);
     passwordHasher.compare.mockResolvedValue(false);
 
-    await expect(useCase.execute({ refreshToken: 'wrong-token' }))
-      .rejects.toThrow(UnauthorizedException);
+    await expect(useCase.execute({ refreshToken: 'wrong-token' })).rejects.toThrow(
+      UnauthorizedException,
+    );
   });
 });

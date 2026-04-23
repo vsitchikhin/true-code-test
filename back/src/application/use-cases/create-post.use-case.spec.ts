@@ -47,7 +47,7 @@ describe('CreatePostUseCase', () => {
     expect(result.images[0].path).toBe(command.imagePaths[0]);
     expect(result.images[0].order).toBe(0);
     expect(result.images[1].order).toBe(1);
-    
+
     expect(postRepository.save).toHaveBeenCalled();
   });
 });

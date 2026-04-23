@@ -34,7 +34,7 @@ export class PostController {
     private readonly getFeedUseCase: GetFeedUseCase,
     private readonly deletePostUseCase: DeletePostUseCase,
     private readonly updatePostUseCase: UpdatePostUseCase,
-  ) { }
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -74,10 +74,7 @@ export class PostController {
   }
 
   @Get()
-  async getFeed(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
-  ) {
+  async getFeed(@Query('page') page: string = '1', @Query('limit') limit: string = '10') {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
 
@@ -114,7 +111,8 @@ export class PostController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     // Body can send a single ID as a string or an array of strings
-    const imagesToRemoveIds = typeof removeImageIds === 'string' ? [removeImageIds] : removeImageIds;
+    const imagesToRemoveIds =
+      typeof removeImageIds === 'string' ? [removeImageIds] : removeImageIds;
     const newImagePaths = files?.map((file) => `/uploads/${file.filename}`);
 
     return this.updatePostUseCase.execute({
@@ -129,10 +127,7 @@ export class PostController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  async delete(
-    @CurrentUser('id') userId: string,
-    @Param('id') id: string,
-  ) {
+  async delete(@CurrentUser('id') userId: string, @Param('id') id: string) {
     await this.deletePostUseCase.execute({
       postId: id,
       authorId: userId,
