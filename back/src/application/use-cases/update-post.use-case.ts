@@ -2,7 +2,13 @@ import { unlink } from 'fs/promises';
 import { randomUUID } from 'node:crypto';
 import { join } from 'path';
 
-import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 
 import { PostImage } from '@domain/entities/post-image.entity';
 import { IPostRepository } from '@domain/repositories/post.repository.interface';
@@ -35,6 +41,17 @@ export class UpdatePostUseCase {
 
     if (input.content !== undefined) {
       post.content = input.content;
+    }
+
+    const removeCount = input.imagesToRemoveIds?.length ?? 0;
+    const addCount = input.newImagePaths?.length ?? 0;
+    const resultingCount = post.images.length - removeCount + addCount;
+
+    if (resultingCount < 1) {
+      throw new BadRequestException('Post must have at least one image');
+    }
+    if (resultingCount > 10) {
+      throw new BadRequestException('Post cannot have more than 10 images');
     }
 
     // Удаляем помеченные изображения

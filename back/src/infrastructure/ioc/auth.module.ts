@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { LoginUseCase } from '@application/use-cases/login.use-case';
+import { LogoutUseCase } from '@application/use-cases/logout.use-case';
 import { RefreshTokenUseCase } from '@application/use-cases/refresh-token.use-case';
 import { UserModule } from '@infrastructure/ioc/user.module';
 import { JwtStrategy } from '@infrastructure/security/jwt.strategy';
@@ -33,8 +34,9 @@ import { AuthController } from '@presentation/controllers/auth.controller';
       useClass: NestJwtAuthService,
     },
     LoginUseCase,
+    LogoutUseCase,
     RefreshTokenUseCase,
   ],
-  exports: [LoginUseCase, RefreshTokenUseCase, 'IAuthService'],
+  exports: [LoginUseCase, LogoutUseCase, RefreshTokenUseCase, 'IAuthService'],
 })
 export class AuthModule {}

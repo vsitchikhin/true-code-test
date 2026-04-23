@@ -109,6 +109,7 @@ export class UserController {
         }
         cb(null, true);
       },
+      limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
   async updateAvatar(
