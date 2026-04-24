@@ -34,4 +34,9 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   avatarPath?: string;
+
+  @ApiPropertyOptional({ example: '1990-01-01' })
+  @IsOptional()
+  @IsString()
+  birthDate?: string;
 }

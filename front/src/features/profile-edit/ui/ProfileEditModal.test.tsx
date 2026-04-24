@@ -40,6 +40,9 @@ const mockUser = {
   username: 'testuser',
   email: 'test@test.com',
   phoneNumber: '',
+  firstName: 'Иван',
+  lastName: 'Иванов',
+  birthDate: '1990-01-01T00:00:00.000Z',
   bio: 'Привет, мир',
   avatarPath: null,
   createdAt: new Date().toISOString(),
@@ -63,6 +66,9 @@ describe('ProfileEditModal', () => {
   it('рендерит форму с предзаполненными данными пользователя', () => {
     renderModal();
     expect(screen.getByPlaceholderText(/username/i)).toHaveValue('testuser');
+    expect(screen.getByLabelText(/^Имя$/i)).toHaveValue('Иван');
+    expect(screen.getByLabelText(/^Фамилия$/i)).toHaveValue('Иванов');
+    expect(screen.getByLabelText(/Дата рождения/i)).toHaveValue('1990-01-01');
     expect(screen.getByPlaceholderText(/расскажите/i)).toHaveValue('Привет, мир');
   });
 
@@ -97,6 +103,9 @@ describe('ProfileEditModal', () => {
     await waitFor(() => {
       expect(api.api.userControllerUpdateMe).toHaveBeenCalledWith({
         username: 'testuser',
+        firstName: 'Иван',
+        lastName: 'Иванов',
+        birthDate: '1990-01-01',
         bio: 'Привет, мир',
       });
       expect(onClose).toHaveBeenCalled();

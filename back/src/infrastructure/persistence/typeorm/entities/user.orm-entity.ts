@@ -34,6 +34,9 @@ export class UserOrmEntity {
   @Column({ name: 'refresh_token_hash', type: 'text', nullable: true })
   refreshTokenHash: string | null;
 
+  @Column({ name: 'birth_date', type: 'date', nullable: true })
+  birthDate: Date | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

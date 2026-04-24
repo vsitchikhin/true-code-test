@@ -2,8 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Camera, User, FileText } from 'lucide-react';
-import { Modal, Button } from '@/shared/ui';
+import { Camera, User, FileText, Cake } from 'lucide-react';
+import { Modal, Button, Input } from '@/shared/ui';
 import { api } from '@/shared/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUserStore } from '@/entities/user';
@@ -16,6 +16,7 @@ const profileSchema = z.object({
   username: z.string().min(3, 'Минимум 3 символа').max(20, 'Максимум 20 символов'),
   firstName: z.string().max(50, 'Максимум 50 символов').optional().nullable(),
   lastName: z.string().max(50, 'Максимум 50 символов').optional().nullable(),
+  birthDate: z.string().optional().nullable(),
   bio: z.string().max(MAX_BIO, `Максимум ${MAX_BIO} символов`).optional().nullable(),
 });
 
@@ -55,6 +56,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onCl
       username: authData?.username || '',
       firstName: authData?.firstName || '',
       lastName: authData?.lastName || '',
+      birthDate: authData?.birthDate ? authData.birthDate.split('T')[0] : '',
       bio: authData?.bio || '',
     },
   });
@@ -93,6 +95,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onCl
         username: data.username,
         firstName: data.firstName || '',
         lastName: data.lastName || '',
+        birthDate: data.birthDate || null,
         bio: data.bio || '',
       });
 
@@ -145,48 +148,45 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onCl
 
           <div className={styles.fields}>
             <div className={styles.row}>
-              <div className={styles.field}>
-                <label className={styles.label}>Имя</label>
-                <input
-                  {...register('firstName')}
-                  className={`${styles.input} ${errors.firstName ? styles.inputError : ''}`}
-                  placeholder="Имя"
-                  autoComplete="off"
-                />
-                {errors.firstName && (
-                  <span className={styles.errorText}>{errors.firstName.message}</span>
-                )}
-              </div>
-
-              <div className={styles.field}>
-                <label className={styles.label}>Фамилия</label>
-                <input
-                  {...register('lastName')}
-                  className={`${styles.input} ${errors.lastName ? styles.inputError : ''}`}
-                  placeholder="Фамилия"
-                  autoComplete="off"
-                />
-                {errors.lastName && (
-                  <span className={styles.errorText}>{errors.lastName.message}</span>
-                )}
-              </div>
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>
-                <User size={13} />
-                Имя пользователя (ID)
-              </label>
-              <input
-                {...register('username')}
-                className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
-                placeholder="username"
-                autoComplete="off"
+              <Input
+                label="Имя"
+                placeholder="Имя"
+                {...register('firstName')}
+                error={errors.firstName?.message}
+                fullWidth
               />
-              {errors.username && (
-                <span className={styles.errorText}>{errors.username.message}</span>
-              )}
+              <Input
+                label="Фамилия"
+                placeholder="Фамилия"
+                {...register('lastName')}
+                error={errors.lastName?.message}
+                fullWidth
+              />
             </div>
+
+            <Input
+              label={
+                <>
+                  <User size={13} /> Имя пользователя (ID)
+                </>
+              }
+              placeholder="username"
+              {...register('username')}
+              error={errors.username?.message}
+              fullWidth
+            />
+
+            <Input
+              label={
+                <>
+                  <Cake size={13} /> Дата рождения
+                </>
+              }
+              type="date"
+              {...register('birthDate')}
+              error={errors.birthDate?.message}
+              fullWidth
+            />
 
             <div className={styles.field}>
               <label className={styles.label}>

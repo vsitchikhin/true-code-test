@@ -14,6 +14,7 @@ export class UserMapper {
       ormEntity.bio,
       ormEntity.avatarPath,
       ormEntity.refreshTokenHash,
+      ormEntity.birthDate ? new Date(ormEntity.birthDate) : null,
       ormEntity.createdAt,
     );
     return user;
@@ -31,6 +32,7 @@ export class UserMapper {
     ormEntity.bio = domainEntity.bio ?? null;
     ormEntity.avatarPath = domainEntity.avatarPath ?? null;
     ormEntity.refreshTokenHash = domainEntity.refreshTokenHash ?? null;
+    ormEntity.birthDate = domainEntity.birthDate ?? null;
     ormEntity.createdAt = domainEntity.createdAt;
     return ormEntity;
   }

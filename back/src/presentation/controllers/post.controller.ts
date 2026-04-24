@@ -114,11 +114,16 @@ export class PostController {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
 
-    return this.getFeedUseCase.execute({
+    const result = await this.getFeedUseCase.execute({
       page: pageNum > 0 ? pageNum : 1,
       limit: limitNum > 0 ? limitNum : 10,
       order,
     });
+
+    return {
+      posts: result.posts.map((post) => PostResponseDto.fromDomain(post)),
+      meta: result.meta,
+    };
   }
 
   @Get('user/:userId')
@@ -136,12 +141,17 @@ export class PostController {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
 
-    return this.getPostsByUserIdUseCase.execute({
+    const result = await this.getPostsByUserIdUseCase.execute({
       userId,
       page: pageNum > 0 ? pageNum : 1,
       limit: limitNum > 0 ? limitNum : 10,
       order,
     });
+
+    return {
+      posts: result.posts.map((post) => PostResponseDto.fromDomain(post)),
+      meta: result.meta,
+    };
   }
 
   @Get('username/:username')

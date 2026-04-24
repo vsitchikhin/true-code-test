@@ -34,9 +34,10 @@ services:
     container_name: true_code_app
     restart: always
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     environment:
       - BACKEND_URL=http://api:3000
+      - PORT=${FRONTEND_PORT}
     depends_on:
       - api
     volumes:

@@ -17,12 +17,13 @@ describe('UpdateProfileUseCase', () => {
       save: jest.fn(),
       findByEmail: jest.fn(),
       findByPhoneNumber: jest.fn(),
+      findAll: jest.fn(),
     };
 
     useCase = new UpdateProfileUseCase(userRepository);
   });
 
-  it('should successfully update user bio and avatar', async () => {
+  it('should successfully update user bio, avatar, and new fields', async () => {
     const userId = 'user-1';
     const user = new User(userId, 'test@test.com', 'testuser', 'hash', '123');
     userRepository.findById.mockResolvedValue(user);
@@ -32,12 +33,18 @@ describe('UpdateProfileUseCase', () => {
       userId,
       bio: 'New bio',
       avatarPath: '/path/to/avatar.png',
+      firstName: 'Иван',
+      lastName: 'Иванов',
+      birthDate: '1990-01-01',
     };
 
     const result = await useCase.execute(command);
 
     expect(result.bio).toBe('New bio');
     expect(result.avatarPath).toBe('/path/to/avatar.png');
+    expect(result.firstName).toBe('Иван');
+    expect(result.lastName).toBe('Иванов');
+    expect(result.birthDate).toEqual(new Date('1990-01-01'));
 
     expect(userRepository.save).toHaveBeenCalled();
   });

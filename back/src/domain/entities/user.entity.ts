@@ -10,6 +10,7 @@ export class User {
     public bio: string | null = null,
     public avatarPath: string | null = null,
     public refreshTokenHash: string | null = null,
+    public birthDate: Date | null = null,
     public readonly createdAt: Date = new Date(),
   ) {}
 }

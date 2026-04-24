@@ -16,6 +16,7 @@ describe('RegisterUserUseCase', () => {
       findByUsername: jest.fn(),
       findByPhoneNumber: jest.fn(),
       findById: jest.fn(),
+      findAll: jest.fn(),
       save: jest.fn(),
     };
 
@@ -31,12 +32,14 @@ describe('RegisterUserUseCase', () => {
     expect(useCase).toBeDefined();
   });
 
-  it('should register a user successfully when all and unique', async () => {
+  it('should register a user successfully when all fields are unique and names are provided', async () => {
     const dto: RegisterUserDto = {
       email: 'test@example.com',
       username: 'testuser',
       password: 'password123',
       phoneNumber: '+79991112233',
+      firstName: 'Иван',
+      lastName: 'Иванов',
     };
 
     userRepository.findByEmail.mockResolvedValue(null);
@@ -49,6 +52,9 @@ describe('RegisterUserUseCase', () => {
 
     expect(result).toBeInstanceOf(User);
     expect(result.email).toBe(dto.email);
+    expect(result.username).toBe(dto.username);
+    expect(result.firstName).toBe(dto.firstName);
+    expect(result.lastName).toBe(dto.lastName);
     expect(result.passwordHash).toBe('hashed_password');
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(userRepository.save).toHaveBeenCalled();

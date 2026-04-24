@@ -10,6 +10,7 @@ export interface UpdateProfileCommand {
   lastName?: string;
   bio?: string;
   avatarPath?: string;
+  birthDate?: string;
 }
 
 @Injectable()
@@ -48,6 +49,10 @@ export class UpdateProfileUseCase {
 
     if (command.avatarPath !== undefined) {
       user.avatarPath = command.avatarPath;
+    }
+
+    if (command.birthDate !== undefined) {
+      user.birthDate = command.birthDate ? new Date(command.birthDate) : null;
     }
 
     return await this.userRepository.save(user);

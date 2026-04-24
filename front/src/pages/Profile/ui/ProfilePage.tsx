@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { Settings, Calendar, Mail, Phone, FileText } from 'lucide-react';
+import { Settings, Calendar, Mail, Phone, Cake, FileText } from 'lucide-react';
 import { api } from '@/shared/api';
 import { PostList, type Post } from '@/entities/post';
 import { PageLayout, Button } from '@/shared/ui';
@@ -110,6 +110,14 @@ export const ProfilePage: React.FC = () => {
     ? new Date(user.createdAt).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
     : '';
 
+  const formattedBirthDate = user?.birthDate
+    ? new Date(user.birthDate).toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
+
   const handleAvatarClick = () => {
     if (isMe) setIsEditModalOpen(true);
   };
@@ -178,6 +186,12 @@ export const ProfilePage: React.FC = () => {
                     <Calendar size={14} />
                     <span>с {formattedDate}</span>
                   </div>
+                  {formattedBirthDate && (
+                    <div className={styles.metaItem}>
+                      <Cake size={14} />
+                      <span>Родился {formattedBirthDate}</span>
+                    </div>
+                  )}
                   {user?.email && (
                     <div className={styles.metaItem}>
                       <Mail size={14} />

@@ -34,6 +34,7 @@ export interface UserResponseDto {
   lastName?: string | null;
   bio?: string | null;
   avatarPath?: string | null;
+  birthDate?: string | null;
   /** @format date-time */
   createdAt: string;
 }
@@ -49,6 +50,8 @@ export interface UpdateProfileDto {
   bio?: string;
   /** @example "https://example.com/avatar.png" */
   avatarPath?: string;
+  /** @example "1990-01-01" */
+  birthDate?: string;
 }
 
 export interface LoginDto {

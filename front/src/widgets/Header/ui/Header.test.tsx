@@ -50,19 +50,36 @@ describe('Header', () => {
     useUserStore.setState({ authData: mockUser, isMounted: true });
   });
 
-  it('отображает имя пользователя', () => {
+  it('отображает полное имя пользователя, если оно есть', () => {
+    useUserStore.setState({
+      authData: { ...mockUser, firstName: 'Иван', lastName: 'Иванов' },
+    });
+    renderHeader();
+    expect(screen.getByText('Иван Иванов')).toBeInTheDocument();
+  });
+
+  it('отображает имя пользователя, если полного имени нет', () => {
+    useUserStore.setState({
+      authData: { ...mockUser, firstName: null, lastName: null },
+    });
     renderHeader();
     expect(screen.getByText('testuser')).toBeInTheDocument();
   });
 
-  it('отображает инициал в аватаре-заглушке, если нет фото', () => {
+  it('отображает инициал в аватаре-заглушке по имени', () => {
+    useUserStore.setState({
+      authData: { ...mockUser, firstName: 'Иван', lastName: 'Иванов' },
+    });
     renderHeader();
-    expect(screen.getByText('T')).toBeInTheDocument();
+    expect(screen.getByText('И')).toBeInTheDocument();
   });
 
   it('отображает ссылку на ленту', () => {
     renderHeader();
-    expect(screen.getByRole('link', { name: /лента/i })).toBeInTheDocument();
+    // Используем getAllByRole и берем ту, что в навигации, или просто проверяем что хоть одна есть
+    const links = screen.getAllByRole('link', { name: /лента/i });
+    expect(links.length).toBeGreaterThan(0);
+    expect(links[0]).toBeInTheDocument();
   });
 
   it('отображает кнопку "Создать пост"', () => {

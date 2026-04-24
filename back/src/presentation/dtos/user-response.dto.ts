@@ -27,6 +27,9 @@ export class UserResponseDto {
   @ApiProperty({ type: 'string', required: false, nullable: true })
   avatarPath: string | null;
 
+  @ApiProperty({ type: 'string', required: false, nullable: true })
+  birthDate: string | null;
+
   @ApiProperty()
   createdAt: Date;
 
@@ -40,6 +43,7 @@ export class UserResponseDto {
     dto.lastName = user.lastName;
     dto.bio = user.bio;
     dto.avatarPath = user.avatarPath;
+    dto.birthDate = user.birthDate ? user.birthDate.toISOString() : null;
     dto.createdAt = user.createdAt;
     return dto;
   }
