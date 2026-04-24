@@ -129,7 +129,7 @@ export const PostFormModal: React.FC<PostFormModalProps> = ({ isOpen, onClose, p
       } else {
         await api.api.postControllerCreate({ content: data.content, images: selectedFiles });
       }
-      void queryClient.invalidateQueries({ queryKey: ['posts', 'infinite'] });
+      void queryClient.invalidateQueries({ queryKey: ['posts'] });
       onClose();
     } catch {
       setSubmitError('Не удалось сохранить пост. Попробуйте позже.');

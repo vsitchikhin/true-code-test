@@ -90,7 +90,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className = '' }) => {
     setIsDeleting(true);
     try {
       await api.api.postControllerDelete(post.id);
-      void queryClient.invalidateQueries({ queryKey: ['posts', 'infinite'] });
+      void queryClient.invalidateQueries({ queryKey: ['posts'] });
       setIsConfirmDeleteOpen(false);
     } catch {
       setIsDeleting(false);
