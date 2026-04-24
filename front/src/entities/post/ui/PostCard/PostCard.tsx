@@ -1,4 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
+import { Menu } from '@base-ui/react/menu';
+import { useUserStore } from '@/entities/user';
+import { api } from '@/shared/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { PostFormModal } from '@/features/post-form';
+import { ConfirmDialog } from '@/shared/ui';
 import type { Post } from '../../model/types';
 import styles from './PostCard.module.scss';
 
@@ -58,6 +65,13 @@ const IconShare = () => (
 
 export const PostCard: React.FC<PostCardProps> = ({ post, className = '' }) => {
   const { author, content, images, createdAt } = post;
+  const authData = useUserStore((state) => state.authData);
+  const queryClient = useQueryClient();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const isAuthor = authData?.id === author?.id;
 
   const formattedDate = new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric',
@@ -71,16 +85,55 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className = '' }) => {
     ? `${uploadsUrl}${author.avatarPath}`
     : `https://ui-avatars.com/api/?name=${author?.username || 'U'}&background=6366f1&color=fff&bold=true`;
 
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true);
+    try {
+      await api.api.postControllerDelete(post.id);
+      void queryClient.invalidateQueries({ queryKey: ['posts', 'infinite'] });
+      setIsConfirmDeleteOpen(false);
+    } catch {
+      setIsDeleting(false);
+      setIsConfirmDeleteOpen(false);
+    }
+  };
+
   return (
-    <article className={`${styles.postCard} ${className}`}>
+    <article className={`${styles.postCard} ${className} ${isDeleting ? styles.deleting : ''}`}>
       <header className={styles.header}>
-        <img src={avatarSrc} alt={author?.username} className={styles.avatar} />
-        <div className={styles.authorInfo}>
-          <span className={styles.username}>{author?.username || 'Аноним'}</span>
-          <time className={styles.date} dateTime={createdAt}>
-            {formattedDate}
-          </time>
+        <div className={styles.headerLeft}>
+          <img src={avatarSrc} alt={author?.username} className={styles.avatar} />
+          <div className={styles.authorInfo}>
+            <span className={styles.username}>{author?.username || 'Аноним'}</span>
+            <time className={styles.date} dateTime={createdAt}>
+              {formattedDate}
+            </time>
+          </div>
         </div>
+
+        {isAuthor && (
+          <Menu.Root>
+            <Menu.Trigger className={styles.moreButton}>
+              <MoreHorizontal size={20} />
+            </Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner sideOffset={8} align="end">
+                <Menu.Popup className={styles.menuPopup}>
+                  <Menu.Item className={styles.menuItem} onClick={() => setIsEditModalOpen(true)}>
+                    <Edit2 size={16} />
+                    <span>Редактировать</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    className={`${styles.menuItem} ${styles.menuItemDelete}`}
+                    onClick={() => setIsConfirmDeleteOpen(true)}
+                  >
+                    <Trash2 size={16} />
+                    <span>Удалить</span>
+                  </Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
+        )}
       </header>
 
       <div className={styles.content}>{content}</div>
@@ -111,6 +164,23 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className = '' }) => {
           <IconShare /> <span>Поделиться</span>
         </button>
       </footer>
+
+      <PostFormModal
+        key={post.id + (isEditModalOpen ? '-open' : '-closed')}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        post={post}
+      />
+
+      <ConfirmDialog
+        isOpen={isConfirmDeleteOpen}
+        title="Удалить пост"
+        message="Вы уверены, что хотите удалить этот пост? Это действие нельзя отменить."
+        confirmLabel="Удалить"
+        isLoading={isDeleting}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setIsConfirmDeleteOpen(false)}
+      />
     </article>
   );
 };

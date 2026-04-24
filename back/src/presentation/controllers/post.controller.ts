@@ -107,6 +107,24 @@ export class PostController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Обновление поста' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        content: { type: 'string' },
+        removeImageIds: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+        images: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+        },
+      },
+    },
+  })
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({

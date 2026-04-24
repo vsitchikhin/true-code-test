@@ -1,0 +1,27 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.message {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dangerBtn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35) !important;
+  }
+}

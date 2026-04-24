@@ -193,6 +193,12 @@ $radius: 12px;
     color: $primary;
     background: rgba($primary, 0.04);
   }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }
 
 // ── Ошибка сабмита ────────────────────────────────────────

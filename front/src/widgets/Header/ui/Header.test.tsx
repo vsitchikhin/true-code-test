@@ -23,8 +23,8 @@ vi.mock('@/shared/api', () => ({
   },
 }));
 
-vi.mock('@/features/create-post', () => ({
-  CreatePostModal: () => null,
+vi.mock('@/features/post-form', () => ({
+  PostFormModal: () => null,
 }));
 
 const mockUser = {

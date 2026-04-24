@@ -136,4 +136,58 @@ describe('HomePage', () => {
 
     expect(screen.getByText(/Не удалось загрузить посты/i)).toBeDefined();
   });
+
+  it('не показывает ошибку если посты уже есть (ошибка пагинации)', () => {
+    (useInfiniteQuery as any).mockReturnValue({
+      data: {
+        pages: [
+          { posts: [{ id: '1', content: 'Post 1' }], meta: { total: 2, page: 1, totalPages: 2 } },
+        ],
+      },
+      isLoading: false,
+      isError: true,
+      hasNextPage: true,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+
+    render(<HomePage />);
+
+    expect(screen.queryByText(/Не удалось загрузить посты/i)).toBeNull();
+    expect(screen.getByText('Post 1')).toBeDefined();
+  });
+
+  it('отображает скелетоны при начальной загрузке', () => {
+    (useInfiniteQuery as any).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+
+    render(<HomePage />);
+
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
+  });
+
+  it('не показывает триггер скролла если следующей страницы нет', () => {
+    (useInfiniteQuery as any).mockReturnValue({
+      data: {
+        pages: [
+          { posts: [{ id: '1', content: 'Post 1' }], meta: { total: 1, page: 1, totalPages: 1 } },
+        ],
+      },
+      isLoading: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+
+    const { container } = render(<HomePage />);
+
+    expect(container.querySelector('[class*="loaderTrigger"]')).toBeNull();
+  });
 });

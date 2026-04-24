@@ -59,8 +59,8 @@ describe('UpdatePostUseCase', () => {
     expect(updatedPost.images.length).toBe(1);
   });
 
-  it('should throw BadRequestException when removing last image without adding new', async () => {
-    const mockPost = createMockPost(1);
+  it('should allow removing last image when post has text content', async () => {
+    const mockPost = createMockPost(1); // has 'Original Content'
     postRepository.findById.mockResolvedValue(mockPost);
 
     await expect(
@@ -68,6 +68,38 @@ describe('UpdatePostUseCase', () => {
         postId: 'post-id',
         authorId: 'author-id',
         imagesToRemoveIds: ['img-1'],
+      }),
+    ).resolves.not.toThrow();
+
+    const updatedPost = postRepository.update.mock.calls[0][0];
+    expect(updatedPost.images.length).toBe(0);
+  });
+
+  it('should throw BadRequestException when removing last image from a post with no text', async () => {
+    const images = [new PostImage('img-1', 'post-id', '/uploads/old-1.png', 0)];
+    const emptyTextPost = new Post('post-id', 'author-id', '', images, new Date(), new Date());
+    postRepository.findById.mockResolvedValue(emptyTextPost);
+
+    await expect(
+      useCase.execute({
+        postId: 'post-id',
+        authorId: 'author-id',
+        imagesToRemoveIds: ['img-1'],
+      }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('should throw BadRequestException when setting empty content on an image-less post', async () => {
+    const images = [new PostImage('img-1', 'post-id', '/uploads/old-1.png', 0)];
+    const mockPost = new Post('post-id', 'author-id', '', images, new Date(), new Date());
+    postRepository.findById.mockResolvedValue(mockPost);
+
+    await expect(
+      useCase.execute({
+        postId: 'post-id',
+        authorId: 'author-id',
+        imagesToRemoveIds: ['img-1'],
+        content: '   ',
       }),
     ).rejects.toThrow(BadRequestException);
   });

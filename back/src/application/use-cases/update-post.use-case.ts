@@ -45,13 +45,15 @@ export class UpdatePostUseCase {
 
     const removeCount = input.imagesToRemoveIds?.length ?? 0;
     const addCount = input.newImagePaths?.length ?? 0;
-    const resultingCount = post.images.length - removeCount + addCount;
+    const resultingImageCount = post.images.length - removeCount + addCount;
+    const resultingContent = input.content !== undefined ? input.content : post.content;
 
-    if (resultingCount < 1) {
-      throw new BadRequestException('Post must have at least one image');
-    }
-    if (resultingCount > 10) {
+    if (resultingImageCount > 10) {
       throw new BadRequestException('Post cannot have more than 10 images');
+    }
+
+    if (resultingImageCount === 0 && !resultingContent.trim()) {
+      throw new BadRequestException('Post must have either text or at least one image');
     }
 
     if (input.imagesToRemoveIds && input.imagesToRemoveIds.length > 0) {
@@ -64,8 +66,8 @@ export class UpdatePostUseCase {
             const relativePath = image.path.replace(/^\/uploads\//, '');
             const absolutePath = join(process.cwd(), 'uploads', relativePath);
             await unlink(absolutePath);
-          } catch (error) {
-            console.error(`Failed to delete file: ${image.path}`, error);
+          } catch {
+            // ignore — file may not exist on disk
           }
 
           post.images.splice(imgIndex, 1);

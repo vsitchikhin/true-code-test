@@ -2,14 +2,14 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { CreatePostModal } from './CreatePostModal';
+import { PostFormModal } from './PostFormModal';
 import { useUserStore } from '@/entities/user';
 import { api } from '@/shared/api';
 
-// ── Моки ────────────────────────────────────────────────────
+// ── Моки ─────────────────────────────────────────────────────
 
 vi.mock('@/shared/api', () => ({
-  api: { api: { postControllerCreate: vi.fn() } },
+  api: { api: { postControllerCreate: vi.fn(), postControllerUpdate: vi.fn() } },
 }));
 
 vi.mock('@/shared/ui', async (importOriginal) => {
@@ -37,7 +37,7 @@ vi.mock('@/shared/ui', async (importOriginal) => {
 vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
 vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
 
-// ── Helpers ──────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
 
 const mockUser = {
   id: '1',
@@ -58,16 +58,16 @@ function renderModal(props: { isOpen?: boolean; onClose?: () => void } = {}) {
 
   const result = render(
     <QueryClientProvider client={queryClient}>
-      <CreatePostModal isOpen={props.isOpen ?? true} onClose={onClose} />
+      <PostFormModal isOpen={props.isOpen ?? true} onClose={onClose} />
     </QueryClientProvider>,
   );
 
   return { ...result, onClose, queryClient };
 }
 
-// ── Тесты ────────────────────────────────────────────────────
+// ── Тесты ─────────────────────────────────────────────────────
 
-describe('CreatePostModal', () => {
+describe('PostFormModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useUserStore.setState({ authData: mockUser, isMounted: true });
@@ -88,8 +88,10 @@ describe('CreatePostModal', () => {
 
   it('показывает аватар-заглушку пользователя', () => {
     renderModal();
-    const avatar = screen.getByAltText('testuser');
-    expect(avatar).toHaveAttribute('src', expect.stringContaining('ui-avatars.com'));
+    expect(screen.getByAltText('testuser')).toHaveAttribute(
+      'src',
+      expect.stringContaining('ui-avatars.com'),
+    );
   });
 
   it('показывает подсказку drag&drop когда фото не выбраны', () => {
@@ -99,11 +101,30 @@ describe('CreatePostModal', () => {
 
   // — Валидация —————————————————————————————
 
-  it('показывает ошибку при отправке пустой формы', async () => {
+  it('показывает ошибку при отправке пустой формы без картинок', async () => {
     renderModal();
     fireEvent.click(screen.getByRole('button', { name: /опубликовать/i }));
-    await screen.findByText('Введите текст поста');
+    await screen.findByText('Введите текст поста или добавьте фото');
     expect(api.api.postControllerCreate).not.toHaveBeenCalled();
+  });
+
+  it('публикует пост только с картинками без текста', async () => {
+    vi.mocked(api.api.postControllerCreate).mockResolvedValue({} as never);
+    const { onClose } = renderModal();
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+    await act(async () => {
+      fireEvent.change(input, { target: { files: [makeFile('photo.jpg', 'image/jpeg')] } });
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /опубликовать/i }));
+
+    await waitFor(() => {
+      expect(api.api.postControllerCreate).toHaveBeenCalledWith(
+        expect.objectContaining({ content: '' }),
+      );
+      expect(onClose).toHaveBeenCalled();
+    });
   });
 
   it('показывает ошибку если текст длиннее 1000 символов', async () => {
@@ -138,7 +159,7 @@ describe('CreatePostModal', () => {
     await userEvent.type(screen.getByPlaceholderText('Что нового?'), 'Тестовый пост');
     fireEvent.click(screen.getByRole('button', { name: /опубликовать/i }));
 
-    await screen.findByText(/Не удалось опубликовать пост/i);
+    await screen.findByText(/Не удалось сохранить пост/i);
   });
 
   it('не закрывает модалку при сбое API', async () => {
@@ -148,7 +169,7 @@ describe('CreatePostModal', () => {
     await userEvent.type(screen.getByPlaceholderText('Что нового?'), 'Текст');
     fireEvent.click(screen.getByRole('button', { name: /опубликовать/i }));
 
-    await screen.findByText(/Не удалось опубликовать пост/i);
+    await screen.findByText(/Не удалось сохранить пост/i);
     expect(onClose).not.toHaveBeenCalled();
   });
 
@@ -157,14 +178,13 @@ describe('CreatePostModal', () => {
   it('показывает превью после выбора изображения', async () => {
     renderModal();
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    const file = makeFile('photo.jpg', 'image/jpeg');
 
     await act(async () => {
-      fireEvent.change(input, { target: { files: [file] } });
+      fireEvent.change(input, { target: { files: [makeFile('photo.jpg', 'image/jpeg')] } });
     });
 
-    // img с alt="" имеет роль presentation, проверяем через querySelectorAll
-    expect(document.querySelectorAll('img').length).toBeGreaterThan(1); // аватар + превью
+    // img с alt="" имеет роль presentation, ищем через querySelectorAll
+    expect(document.querySelectorAll('img').length).toBeGreaterThan(1);
     expect(screen.getByText('1 / 10 фото')).toBeInTheDocument();
   });
 
@@ -178,17 +198,15 @@ describe('CreatePostModal', () => {
       });
     });
 
-    // Счётчик "N / 10 фото" не должен появиться — файл отфильтрован
     expect(screen.queryByText(/\d+ \/ 10 фото/)).not.toBeInTheDocument();
   });
 
   it('принимает HEIC файл по расширению даже без MIME-типа', async () => {
     renderModal();
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    const heicFile = makeFile('photo.heic', ''); // пустой MIME как на Windows
 
     await act(async () => {
-      fireEvent.change(input, { target: { files: [heicFile] } });
+      fireEvent.change(input, { target: { files: [makeFile('photo.heic', '')] } });
     });
 
     expect(screen.getByText('1 / 10 фото')).toBeInTheDocument();
@@ -230,9 +248,7 @@ describe('CreatePostModal', () => {
 
     expect(screen.getByText('1 / 10 фото')).toBeInTheDocument();
 
-    // Кликаем на первую кнопку удаления (не кнопку Опубликовать)
-    const removeBtns = document.querySelectorAll('[class*="removeBtn"]');
-    fireEvent.click(removeBtns[0]);
+    fireEvent.click(document.querySelector('[class*="removeBtn"]') as HTMLElement);
 
     await waitFor(() => {
       expect(screen.queryByText(/\d+ \/ 10 фото/)).not.toBeInTheDocument();
@@ -241,7 +257,7 @@ describe('CreatePostModal', () => {
 
   // — Drag & drop ————————————————————————————
 
-  it('добавляет dragZoneActive класс при dragOver', () => {
+  it('добавляет класс активности при dragOver', () => {
     renderModal();
     const dropZone = document.querySelector('[class*="dropZone"]') as HTMLElement;
 
@@ -250,7 +266,7 @@ describe('CreatePostModal', () => {
     expect(dropZone.className).toMatch(/dropZoneActive/);
   });
 
-  it('убирает dragZoneActive при dragLeave за пределы зоны', () => {
+  it('убирает класс активности при dragLeave за пределы зоны', () => {
     renderModal();
     const dropZone = document.querySelector('[class*="dropZone"]') as HTMLElement;
 
@@ -263,10 +279,9 @@ describe('CreatePostModal', () => {
   it('добавляет файлы через drop', async () => {
     renderModal();
     const dropZone = document.querySelector('[class*="dropZone"]') as HTMLElement;
-    const file = makeFile('dropped.png', 'image/png');
 
     await act(async () => {
-      fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
+      fireEvent.drop(dropZone, { dataTransfer: { files: [makeFile('dropped.png', 'image/png')] } });
     });
 
     expect(screen.getByText('1 / 10 фото')).toBeInTheDocument();

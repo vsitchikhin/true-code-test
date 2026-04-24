@@ -432,12 +432,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags posts
      * @name PostControllerUpdate
+     * @summary Обновление поста
      * @request PATCH:/api/posts/{id}
      */
-    postControllerUpdate: (id: string, params: RequestParams = {}) =>
+    postControllerUpdate: (
+      id: string,
+      data: {
+        content?: string;
+        removeImageIds?: string[];
+        images?: File[];
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<void, any>({
         path: `/api/posts/${id}`,
         method: 'PATCH',
+        body: data,
+        type: ContentType.FormData,
         ...params,
       }),
 

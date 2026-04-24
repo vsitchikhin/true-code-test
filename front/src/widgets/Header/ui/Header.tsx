@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { api } from '@/shared/api';
 import { useUserStore } from '@/entities/user';
 import { Button } from '@/shared/ui';
-import { CreatePostModal } from '@/features/create-post';
+import { PostFormModal } from '@/features/post-form';
 import styles from './Header.module.scss';
 
 export const Header = () => {
@@ -63,7 +63,11 @@ export const Header = () => {
             Создать пост
           </Button>
 
-          <CreatePostModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+          <PostFormModal
+            key={isCreateModalOpen ? 'open' : 'closed'}
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+          />
 
           <Link to="/profile" className={styles.user}>
             {avatarUrl ? (
