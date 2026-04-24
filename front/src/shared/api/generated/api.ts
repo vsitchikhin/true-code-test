@@ -385,12 +385,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags posts
      * @name PostControllerCreate
+     * @summary Создание нового поста
      * @request POST:/api/posts
      */
-    postControllerCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
+    postControllerCreate: (
+      data: {
+        content?: string;
+        images?: File[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<PostResponseDto, any>({
         path: `/api/posts`,
         method: 'POST',
+        body: data,
+        type: ContentType.FormData,
+        format: 'json',
         ...params,
       }),
 

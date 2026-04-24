@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { api } from '@/shared/api';
 import { useUserStore } from '@/entities/user';
 import { Button } from '@/shared/ui';
+import { CreatePostModal } from '@/features/create-post';
 import styles from './Header.module.scss';
 
 export const Header = () => {
@@ -9,6 +11,8 @@ export const Header = () => {
   const location = useLocation();
   const authData = useUserStore((state) => state.authData);
   const logout = useUserStore((state) => state.logout);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -43,7 +47,7 @@ export const Header = () => {
         </div>
 
         <div className={styles.right}>
-          <Button variant="primary" size="xs" onClick={() => navigate('/posts/create')}>
+          <Button variant="primary" size="xs" onClick={() => setIsCreateModalOpen(true)}>
             <svg
               width="12"
               height="12"
@@ -58,6 +62,8 @@ export const Header = () => {
             </svg>
             Создать пост
           </Button>
+
+          <CreatePostModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
 
           <Link to="/profile" className={styles.user}>
             {avatarUrl ? (

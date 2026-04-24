@@ -17,7 +17,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 
 import { diskStorage } from 'multer';
 
@@ -27,6 +27,7 @@ import { GetFeedUseCase } from '@application/use-cases/get-feed.use-case';
 import { UpdatePostUseCase } from '@application/use-cases/update-post.use-case';
 import { JwtAuthGuard } from '@infrastructure/security/jwt-auth.guard';
 import { CurrentUser } from '@presentation/decorators/current-user.decorator';
+import { PostResponseDto } from '@presentation/dtos/post-response.dto';
 import { FeedResponseDto } from '@presentation/dtos/post-response.dto';
 
 @ApiTags('posts')
@@ -41,6 +42,21 @@ export class PostController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Создание нового поста' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Пост успешно создан', type: PostResponseDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        content: { type: 'string' },
+        images: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+        },
+      },
+    },
+  })
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({

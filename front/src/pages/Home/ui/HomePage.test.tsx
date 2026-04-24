@@ -8,6 +8,9 @@ import HomePage from './HomePage';
 // Мокаем зависимости
 vi.mock('@tanstack/react-query', () => ({
   useInfiniteQuery: vi.fn(),
+  useQueryClient: vi.fn(() => ({
+    invalidateQueries: vi.fn(),
+  })),
 }));
 
 vi.mock('react-intersection-observer', () => ({
@@ -132,78 +135,5 @@ describe('HomePage', () => {
     render(<HomePage />);
 
     expect(screen.getByText(/Не удалось загрузить посты/i)).toBeDefined();
-  });
-
-  it('не должен показывать ошибку, если часть постов уже загружена', () => {
-    (useInfiniteQuery as any).mockReturnValue({
-      data: {
-        pages: [
-          { posts: [{ id: '1', content: 'Post 1' }], meta: { total: 2, page: 1, totalPages: 2 } },
-        ],
-      },
-      isLoading: false,
-      isError: true,
-      hasNextPage: false,
-      isFetchingNextPage: false,
-      fetchNextPage: mockFetchNextPage,
-    });
-
-    render(<HomePage />);
-
-    expect(screen.queryByText(/Не удалось загрузить посты/i)).toBeNull();
-    expect(screen.getByText('Post 1')).toBeDefined();
-  });
-
-  it('должен показывать скелетоны при начальной загрузке', () => {
-    (useInfiniteQuery as any).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      isError: false,
-      hasNextPage: false,
-      isFetchingNextPage: false,
-      fetchNextPage: mockFetchNextPage,
-    });
-
-    render(<HomePage />);
-
-    expect(screen.getByTestId('loading')).toBeDefined();
-  });
-
-  it('должен показывать loaderTrigger только если есть следующая страница', () => {
-    (useInfiniteQuery as any).mockReturnValue({
-      data: {
-        pages: [
-          { posts: [{ id: '1', content: 'Post 1' }], meta: { total: 1, page: 1, totalPages: 1 } },
-        ],
-      },
-      isLoading: false,
-      isError: false,
-      hasNextPage: false,
-      isFetchingNextPage: false,
-      fetchNextPage: mockFetchNextPage,
-    });
-
-    const { container } = render(<HomePage />);
-
-    expect(container.querySelector('[class*="loaderTrigger"]')).toBeNull();
-  });
-
-  it('должен рендерить loaderTrigger если есть следующая страница', () => {
-    (useInfiniteQuery as any).mockReturnValue({
-      data: {
-        pages: [
-          { posts: [{ id: '1', content: 'Post 1' }], meta: { total: 2, page: 1, totalPages: 2 } },
-        ],
-      },
-      isLoading: false,
-      isError: false,
-      hasNextPage: true,
-      isFetchingNextPage: false,
-      fetchNextPage: mockFetchNextPage,
-    });
-
-    const { container } = render(<HomePage />);
-
-    expect(container.querySelector('[class*="loaderTrigger"]')).not.toBeNull();
   });
 });

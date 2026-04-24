@@ -23,6 +23,10 @@ vi.mock('@/shared/api', () => ({
   },
 }));
 
+vi.mock('@/features/create-post', () => ({
+  CreatePostModal: () => null,
+}));
+
 const mockUser = {
   id: '1',
   username: 'testuser',
@@ -66,10 +70,12 @@ describe('Header', () => {
     expect(screen.getByRole('button', { name: /создать пост/i })).toBeInTheDocument();
   });
 
-  it('нажатие "Создать пост" переходит на /posts/create', () => {
+  it('нажатие "Создать пост" открывает модалку создания поста', () => {
     renderHeader();
+    // До клика — navigate не вызывался
     fireEvent.click(screen.getByRole('button', { name: /создать пост/i }));
-    expect(mockNavigate).toHaveBeenCalledWith('/posts/create');
+    // Модалка замокана как null, достаточно убедиться что navigate НЕ вызван
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('logout вызывает API, очищает стор и редиректит на /login', async () => {
