@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
+import { ArrowDownWideNarrow, ArrowUpWideNarrow } from 'lucide-react';
 import { api } from '@/shared/api';
 import { PostList, type Post } from '@/entities/post';
 import { PageLayout } from '@/shared/ui';
@@ -9,19 +11,28 @@ import styles from './HomePage.module.scss';
 
 const LIMIT = 10;
 
+type SortOrder = 'ASC' | 'DESC';
+
 const HomePage: React.FC = () => {
-  const { ref, inView } = useInView({
-    rootMargin: '200px',
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rawOrder = searchParams.get('order')?.toUpperCase();
+  const order: SortOrder = rawOrder === 'ASC' ? 'ASC' : 'DESC';
+
+  const setOrder = (newOrder: SortOrder) => {
+    setSearchParams({ order: newOrder }, { replace: true });
+  };
+
+  const { ref, inView } = useInView({ rootMargin: '200px' });
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ['posts', 'infinite'],
+      queryKey: ['posts', 'infinite', order],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const response = await api.api.postControllerGetFeed({
           page: String(pageParam),
           limit: String(LIMIT),
+          order,
         });
         return response.data;
       },
@@ -44,25 +55,40 @@ const HomePage: React.FC = () => {
   const allPosts = (data?.pages.flatMap((page) => page.posts) as Post[]) || [];
 
   return (
-    <div className={styles.pageWrapper}>
-      <PageLayout>
-        <div className={styles.feed}>
-          {isError && allPosts.length === 0 ? (
-            <div className={styles.error}>Не удалось загрузить посты</div>
-          ) : (
-            <>
-              <PostList posts={allPosts} isLoading={isLoading} />
-
-              {hasNextPage && (
-                <div ref={ref} className={styles.loaderTrigger}>
-                  {isFetchingNextPage && <div className={styles.miniLoader} />}
-                </div>
-              )}
-            </>
-          )}
+    <PageLayout>
+      <div className={styles.feed}>
+        <div className={styles.sortBar}>
+          <button
+            className={`${styles.sortBtn} ${order === 'DESC' ? styles.sortBtnActive : ''}`}
+            onClick={() => setOrder('DESC')}
+          >
+            <ArrowDownWideNarrow size={14} />
+            Сначала новые
+          </button>
+          <button
+            className={`${styles.sortBtn} ${order === 'ASC' ? styles.sortBtnActive : ''}`}
+            onClick={() => setOrder('ASC')}
+          >
+            <ArrowUpWideNarrow size={14} />
+            Сначала старые
+          </button>
         </div>
-      </PageLayout>
-    </div>
+
+        {isError && allPosts.length === 0 ? (
+          <div className={styles.error}>Не удалось загрузить посты</div>
+        ) : (
+          <>
+            <PostList posts={allPosts} isLoading={isLoading} />
+
+            {hasNextPage && (
+              <div ref={ref} className={styles.loaderTrigger}>
+                {isFetchingNextPage && <div className={styles.miniLoader} />}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </PageLayout>
   );
 };
 

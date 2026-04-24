@@ -6,6 +6,7 @@ import { IPostRepository } from '@domain/repositories/post.repository.interface'
 export interface GetFeedQuery {
   page: number;
   limit: number;
+  order?: 'ASC' | 'DESC';
 }
 
 export interface GetFeedResponse {
@@ -26,8 +27,8 @@ export class GetFeedUseCase {
   ) {}
 
   async execute(query: GetFeedQuery): Promise<GetFeedResponse> {
-    const { page, limit } = query;
-    const { posts, total } = await this.postRepository.findPaginated(page, limit);
+    const { page, limit, order = 'DESC' } = query;
+    const { posts, total } = await this.postRepository.findPaginated(page, limit, order);
 
     return {
       posts,

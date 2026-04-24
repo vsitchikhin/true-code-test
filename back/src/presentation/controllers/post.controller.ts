@@ -17,7 +17,14 @@ import {
   Patch,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 import { diskStorage } from 'multer';
 
@@ -92,9 +99,13 @@ export class PostController {
   @Get()
   @ApiOperation({ summary: 'Получение ленты постов' })
   @ApiResponse({ status: 200, description: 'Успешное получение ленты', type: FeedResponseDto })
+  @ApiQuery({ name: 'page', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: String })
+  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'] })
   async getFeed(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
+    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
   ): Promise<FeedResponseDto> {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
@@ -102,6 +113,7 @@ export class PostController {
     return this.getFeedUseCase.execute({
       page: pageNum > 0 ? pageNum : 1,
       limit: limitNum > 0 ? limitNum : 10,
+      order,
     });
   }
 

@@ -413,9 +413,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/posts
      */
     postControllerGetFeed: (
-      query: {
-        page: string;
-        limit: string;
+      query?: {
+        page?: string;
+        limit?: string;
+        order?: 'ASC' | 'DESC';
       },
       params: RequestParams = {},
     ) =>

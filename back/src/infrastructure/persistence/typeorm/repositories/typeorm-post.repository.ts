@@ -46,10 +46,14 @@ export class TypeOrmPostRepository implements IPostRepository {
     return post;
   }
 
-  async findPaginated(page: number, limit: number): Promise<{ posts: Post[]; total: number }> {
+  async findPaginated(
+    page: number,
+    limit: number,
+    order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<{ posts: Post[]; total: number }> {
     const [ormPosts, total] = await this.postRepo.findAndCount({
       relations: ['images', 'author'],
-      order: { createdAt: 'DESC' },
+      order: { createdAt: order },
       skip: (page - 1) * limit,
       take: limit,
     });

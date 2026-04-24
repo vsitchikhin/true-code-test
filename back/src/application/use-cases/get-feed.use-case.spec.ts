@@ -54,7 +54,16 @@ describe('GetFeedUseCase', () => {
     expect(result.meta.page).toBe(1);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(postRepository.findPaginated).toHaveBeenCalledWith(1, 10);
+    expect(postRepository.findPaginated).toHaveBeenCalledWith(1, 10, 'DESC');
+  });
+
+  it('должен передавать order=ASC в репозиторий', async () => {
+    postRepository.findPaginated.mockResolvedValue({ posts: [], total: 0 });
+
+    await useCase.execute({ page: 1, limit: 10, order: 'ASC' });
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(postRepository.findPaginated).toHaveBeenCalledWith(1, 10, 'ASC');
   });
 
   it('должен корректно обрабатывать пустую ленту', async () => {
