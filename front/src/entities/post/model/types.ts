@@ -7,6 +7,8 @@ export interface PostImage {
 export interface PostAuthor {
   id: string;
   username: string;
+  firstName?: string | null;
+  lastName?: string | null;
   avatarPath?: string | null;
 }
 

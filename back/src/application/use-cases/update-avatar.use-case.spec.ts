@@ -18,6 +18,8 @@ describe('UpdateAvatarUseCase', () => {
     'hash',
     '7000',
     null,
+    null,
+    null,
     '/uploads/avatars/old.png',
   );
 

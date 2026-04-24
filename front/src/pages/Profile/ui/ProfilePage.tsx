@@ -31,7 +31,7 @@ export const ProfilePage: React.FC = () => {
   }, [params.username, currentUser?.username, navigate]);
 
   const {
-    data: user,
+    data: userData,
     isLoading: isUserLoading,
     isError: isUserError,
   } = useQuery({
@@ -42,6 +42,8 @@ export const ProfilePage: React.FC = () => {
     },
     enabled: !!targetUsername,
   });
+
+  const user = isMe ? currentUser : userData;
 
   const {
     data: postsData,
@@ -98,7 +100,11 @@ export const ProfilePage: React.FC = () => {
 
   const avatarUrl = user?.avatarPath
     ? `${import.meta.env.VITE_UPLOADS_URL || 'http://localhost:3000'}${user.avatarPath}`
-    : `https://ui-avatars.com/api/?name=${user?.username || 'U'}&background=6366f1&color=fff&bold=true&size=128`;
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        user?.firstName || user?.lastName
+          ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
+          : user?.username || 'U',
+      )}&background=6366f1&color=fff&bold=true&size=128`;
 
   const formattedDate = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
@@ -157,7 +163,11 @@ export const ProfilePage: React.FC = () => {
             ) : (
               <div className={styles.details}>
                 <div className={styles.nameRow}>
-                  <h1 className={styles.username}>{user?.username}</h1>
+                  <h1 className={styles.username}>
+                    {user?.firstName || user?.lastName
+                      ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
+                      : user?.username}
+                  </h1>
                   <span className={styles.handle}>@{user?.username?.toLowerCase()}</span>
                 </div>
 

@@ -6,6 +6,8 @@ import type { IUserRepository } from '@domain/repositories/user.repository.inter
 export interface UpdateProfileCommand {
   userId: string;
   username?: string;
+  firstName?: string;
+  lastName?: string;
   bio?: string;
   avatarPath?: string;
 }
@@ -34,6 +36,14 @@ export class UpdateProfileUseCase {
 
     if (command.bio !== undefined) {
       user.bio = command.bio;
+    }
+
+    if (command.firstName !== undefined) {
+      user.firstName = command.firstName;
+    }
+
+    if (command.lastName !== undefined) {
+      user.lastName = command.lastName;
     }
 
     if (command.avatarPath !== undefined) {

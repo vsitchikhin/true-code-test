@@ -205,3 +205,18 @@
   padding-top: 20px;
   border-top: 1px solid #f3f4f6;
 }
+
+.row {
+  display: flex;
+  gap: 18px;
+  width: 100%;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .field {
+    flex: 1;
+  }
+}

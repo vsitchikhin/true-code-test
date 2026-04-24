@@ -21,6 +21,8 @@ describe('RefreshTokenUseCase', () => {
     '7000',
     null,
     null,
+    null,
+    null,
     'old-refresh-hash',
   );
 

@@ -14,6 +14,8 @@ const MAX_BIO = 2000;
 
 const profileSchema = z.object({
   username: z.string().min(3, 'Минимум 3 символа').max(20, 'Максимум 20 символов'),
+  firstName: z.string().max(50, 'Максимум 50 символов').optional().nullable(),
+  lastName: z.string().max(50, 'Максимум 50 символов').optional().nullable(),
   bio: z.string().max(MAX_BIO, `Максимум ${MAX_BIO} символов`).optional().nullable(),
 });
 
@@ -51,6 +53,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onCl
     resolver: zodResolver(profileSchema),
     defaultValues: {
       username: authData?.username || '',
+      firstName: authData?.firstName || '',
+      lastName: authData?.lastName || '',
       bio: authData?.bio || '',
     },
   });
@@ -87,12 +91,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onCl
 
       const response = await api.api.userControllerUpdateMe({
         username: data.username,
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
         bio: data.bio || '',
       });
 
       setAuthData(response.data);
-      void queryClient.invalidateQueries({ queryKey: ['user', authData?.id] });
-      void queryClient.invalidateQueries({ queryKey: ['posts'] });
+      void queryClient.invalidateQueries({ queryKey: ['user', response.data.username] });
+      void queryClient.invalidateQueries({ queryKey: ['posts', 'user', response.data.username] });
+      void queryClient.invalidateQueries({ queryKey: ['posts', 'infinite'] });
 
       onClose();
     } catch {
@@ -137,10 +144,38 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onCl
           </div>
 
           <div className={styles.fields}>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>Имя</label>
+                <input
+                  {...register('firstName')}
+                  className={`${styles.input} ${errors.firstName ? styles.inputError : ''}`}
+                  placeholder="Имя"
+                  autoComplete="off"
+                />
+                {errors.firstName && (
+                  <span className={styles.errorText}>{errors.firstName.message}</span>
+                )}
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Фамилия</label>
+                <input
+                  {...register('lastName')}
+                  className={`${styles.input} ${errors.lastName ? styles.inputError : ''}`}
+                  placeholder="Фамилия"
+                  autoComplete="off"
+                />
+                {errors.lastName && (
+                  <span className={styles.errorText}>{errors.lastName.message}</span>
+                )}
+              </div>
+            </div>
+
             <div className={styles.field}>
               <label className={styles.label}>
                 <User size={13} />
-                Имя пользователя
+                Имя пользователя (ID)
               </label>
               <input
                 {...register('username')}

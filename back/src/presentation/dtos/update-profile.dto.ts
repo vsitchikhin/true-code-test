@@ -12,6 +12,18 @@ export class UpdateProfileDto {
   })
   username?: string;
 
+  @ApiPropertyOptional({ example: 'John' })
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  firstName?: string;
+
+  @ApiPropertyOptional({ example: 'Doe' })
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  lastName?: string;
+
   @ApiPropertyOptional({ example: 'I am a software engineer' })
   @IsOptional()
   @IsString()

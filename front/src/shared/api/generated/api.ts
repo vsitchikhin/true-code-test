@@ -15,6 +15,10 @@ export interface RegisterUserDto {
   email: string;
   /** @example "johndoe" */
   username: string;
+  /** @example "Иван" */
+  firstName?: string;
+  /** @example "Иванов" */
+  lastName?: string;
   /** @example "+79991234567" */
   phoneNumber: string;
   /** @example "password123" */
@@ -26,6 +30,8 @@ export interface UserResponseDto {
   email: string;
   username: string;
   phoneNumber: string;
+  firstName?: string | null;
+  lastName?: string | null;
   bio?: string | null;
   avatarPath?: string | null;
   /** @format date-time */
@@ -35,6 +41,10 @@ export interface UserResponseDto {
 export interface UpdateProfileDto {
   /** @example "new_username" */
   username?: string;
+  /** @example "John" */
+  firstName?: string;
+  /** @example "Doe" */
+  lastName?: string;
   /** @example "I am a software engineer" */
   bio?: string;
   /** @example "https://example.com/avatar.png" */

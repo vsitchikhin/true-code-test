@@ -71,10 +71,14 @@ export const Header = () => {
                 <img src={avatarUrl} alt={authData?.username} className={styles.avatar} />
               ) : (
                 <div className={styles.avatarPlaceholder}>
-                  {authData?.username?.[0]?.toUpperCase()}
+                  {(authData?.firstName?.[0] || authData?.username?.[0])?.toUpperCase()}
                 </div>
               )}
-              <span className={styles.username}>{authData?.username}</span>
+              <span className={styles.username}>
+                {authData?.firstName || authData?.lastName
+                  ? `${authData.firstName || ''} ${authData.lastName || ''}`.trim()
+                  : authData?.username}
+              </span>
             </Link>
 
             <button className={styles.logoutBtn} onClick={handleLogout} title="Выйти">

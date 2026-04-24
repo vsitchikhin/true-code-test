@@ -113,7 +113,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className = '' }) => {
               to={isAuthor ? '/user/me' : `/user/${author?.username}`}
               className={styles.usernameLink}
             >
-              <span className={styles.username}>{author?.username || 'Аноним'}</span>
+              <span className={styles.username}>
+                {author?.firstName || author?.lastName
+                  ? `${author.firstName || ''} ${author.lastName || ''}`.trim()
+                  : author?.username || 'Аноним'}
+              </span>
             </Link>
             <time className={styles.date} dateTime={createdAt}>
               {formattedDate}

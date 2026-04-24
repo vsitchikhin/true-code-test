@@ -5,11 +5,11 @@ import { Repository } from 'typeorm';
 
 import { PostImage } from '@domain/entities/post-image.entity';
 import { Post } from '@domain/entities/post.entity';
-import { User } from '@domain/entities/user.entity';
 import { IPostRepository } from '@domain/repositories/post.repository.interface';
 import { PostImageOrmEntity } from '@infrastructure/persistence/typeorm/entities/post-image.orm-entity';
 import { PostOrmEntity } from '@infrastructure/persistence/typeorm/entities/post.orm-entity';
 import { UserOrmEntity } from '@infrastructure/persistence/typeorm/entities/user.orm-entity';
+import { UserMapper } from '@infrastructure/persistence/typeorm/mappers/user.mapper';
 
 @Injectable()
 export class TypeOrmPostRepository implements IPostRepository {
@@ -131,17 +131,7 @@ export class TypeOrmPostRepository implements IPostRepository {
     );
 
     if (ormPost.author) {
-      post.author = new User(
-        ormPost.author.id,
-        ormPost.author.email,
-        ormPost.author.username,
-        ormPost.author.passwordHash,
-        ormPost.author.phoneNumber,
-        ormPost.author.bio,
-        ormPost.author.avatarPath,
-        ormPost.author.refreshTokenHash,
-        ormPost.author.createdAt,
-      );
+      post.author = UserMapper.toDomain(ormPost.author);
     }
 
     return post;

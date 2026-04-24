@@ -42,8 +42,25 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess })
 
       {serverError && <div className={styles.serverError}>{serverError}</div>}
 
+      <div className={styles.row}>
+        <Input
+          label="Имя"
+          placeholder="Иван"
+          {...register('firstName')}
+          error={errors.firstName?.message}
+          fullWidth
+        />
+        <Input
+          label="Фамилия"
+          placeholder="Иванов"
+          {...register('lastName')}
+          error={errors.lastName?.message}
+          fullWidth
+        />
+      </div>
+
       <Input
-        label="Имя пользователя"
+        label="Имя пользователя (@username)"
         placeholder="Введите имя пользователя"
         {...register('username')}
         error={errors.username?.message}

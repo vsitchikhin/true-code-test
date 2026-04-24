@@ -9,6 +9,8 @@ export class UserMapper {
       ormEntity.username,
       ormEntity.passwordHash,
       ormEntity.phoneNumber,
+      ormEntity.firstName,
+      ormEntity.lastName,
       ormEntity.bio,
       ormEntity.avatarPath,
       ormEntity.refreshTokenHash,
@@ -24,6 +26,8 @@ export class UserMapper {
     ormEntity.username = domainEntity.username;
     ormEntity.passwordHash = domainEntity.passwordHash;
     ormEntity.phoneNumber = domainEntity.phoneNumber;
+    ormEntity.firstName = domainEntity.firstName ?? null;
+    ormEntity.lastName = domainEntity.lastName ?? null;
     ormEntity.bio = domainEntity.bio ?? null;
     ormEntity.avatarPath = domainEntity.avatarPath ?? null;
     ormEntity.refreshTokenHash = domainEntity.refreshTokenHash ?? null;

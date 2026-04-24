@@ -11,6 +11,8 @@ export interface RegisterUserCommand {
   username: string;
   password: string;
   phoneNumber: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 @Injectable()
@@ -46,6 +48,8 @@ export class RegisterUserUseCase {
       command.username,
       passwordHash,
       command.phoneNumber,
+      command.firstName,
+      command.lastName,
     );
 
     return this.userRepository.save(user);

@@ -13,6 +13,14 @@ export class RegisterUserDto {
   @IsNotEmpty({ message: 'Имя пользователя обязательно' })
   username: string;
 
+  @ApiProperty({ example: 'Иван', required: false })
+  @IsString()
+  firstName?: string;
+
+  @ApiProperty({ example: 'Иванов', required: false })
+  @IsString()
+  lastName?: string;
+
   @ApiProperty({ example: '+79991234567' })
   @IsString()
   @IsNotEmpty({ message: 'Номер телефона обязателен' })

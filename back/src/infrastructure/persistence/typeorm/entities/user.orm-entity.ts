@@ -19,6 +19,12 @@ export class UserOrmEntity {
   @Column({ name: 'password_hash' })
   passwordHash: string;
 
+  @Column({ name: 'first_name', type: 'text', nullable: true })
+  firstName: string | null;
+
+  @Column({ name: 'last_name', type: 'text', nullable: true })
+  lastName: string | null;
+
   @Column({ type: 'text', nullable: true })
   bio: string | null;
 

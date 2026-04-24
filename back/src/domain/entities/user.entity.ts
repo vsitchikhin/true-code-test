@@ -5,6 +5,8 @@ export class User {
     public username: string,
     public passwordHash: string,
     public phoneNumber: string,
+    public firstName: string | null = null,
+    public lastName: string | null = null,
     public bio: string | null = null,
     public avatarPath: string | null = null,
     public refreshTokenHash: string | null = null,
