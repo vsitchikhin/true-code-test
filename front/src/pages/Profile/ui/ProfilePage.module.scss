@@ -6,12 +6,32 @@
 .profile {
   max-width: 600px;
   margin: 0 auto;
+
+  @media (min-width: 1280px) {
+    max-width: 680px;
+  }
+
+  @media (min-width: 1600px) {
+    max-width: 760px;
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 860px;
+  }
 }
 
 // ─── Cover ───────────────────────────────────────────────────────────────────
 
 .cover {
   height: 180px;
+
+  @media (min-width: 1600px) {
+    height: 220px;
+  }
+
+  @media (min-width: 1920px) {
+    height: 260px;
+  }
   background:
     radial-gradient(ellipse at 15% 60%, rgba(139, 92, 246, 0.55) 0%, transparent 55%),
     radial-gradient(ellipse at 85% 20%, rgba(99, 102, 241, 0.65) 0%, transparent 50%),
@@ -32,7 +52,10 @@
 
 .profileCard {
   background: white;
-  border-bottom: 1px solid #e5e7eb;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 12px;
 }
 
 // ─── Main info row ────────────────────────────────────────────────────────────
@@ -42,6 +65,14 @@
   position: relative;
   height: 68px;
   padding: 0 20px;
+
+  @media (min-width: 1600px) {
+    height: 80px;
+  }
+
+  @media (min-width: 1920px) {
+    height: 90px;
+  }
 }
 
 .avatarWrapper {
@@ -92,6 +123,16 @@
   border-radius: 50%;
   object-fit: cover;
   display: block;
+
+  @media (min-width: 1600px) {
+    width: 124px;
+    height: 124px;
+  }
+
+  @media (min-width: 1920px) {
+    width: 140px;
+    height: 140px;
+  }
 }
 
 .avatarPlaceholder {
@@ -305,6 +346,93 @@
   background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
   background-size: 600px 100%;
   animation: shimmer 1.4s infinite linear;
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .cover {
+    height: 130px;
+  }
+
+  .mainInfo {
+    height: 60px;
+    padding: 0 14px;
+  }
+
+  .avatarWrapper {
+    left: 14px;
+    bottom: 6px;
+  }
+
+  .avatar,
+  .avatarPlaceholder {
+    width: 84px;
+    height: 84px;
+  }
+
+  .actions {
+    right: 14px;
+    bottom: 10px;
+  }
+
+  .details {
+    padding: 10px 14px 0;
+  }
+
+  .stats {
+    padding: 10px 14px 0;
+  }
+
+  .content {
+    padding: 10px 8px 32px;
+  }
+
+  .username {
+    font-size: 1.125rem;
+  }
+
+  .meta {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .cover {
+    height: 110px;
+  }
+
+  .mainInfo {
+    height: 54px;
+    padding: 0 10px;
+  }
+
+  .avatarWrapper {
+    left: 10px;
+  }
+
+  .avatar,
+  .avatarPlaceholder {
+    width: 72px;
+    height: 72px;
+  }
+
+  .actions {
+    right: 10px;
+  }
+
+  .editBtn {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
+  .details {
+    padding: 10px 10px 0;
+  }
+
+  .stats {
+    padding: 10px 10px 0;
+  }
 }
 
 @keyframes shimmer {

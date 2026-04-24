@@ -9,6 +9,7 @@
   border: 1px solid transparent;
   outline: none;
   font-family: inherit;
+  white-space: nowrap;
 
   &:disabled {
     opacity: 0.6;

@@ -123,6 +123,10 @@
 
 body {
   margin: 0;
+
+  @media (max-width: 640px) {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
 }
 
 h1,
