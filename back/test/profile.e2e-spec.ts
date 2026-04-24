@@ -26,6 +26,8 @@ describe('Profile (e2e)', () => {
     username: 'profile_user',
     password: 'Password123!',
     phoneNumber: '79998887766',
+    firstName: 'Profile',
+    lastName: 'Tester',
   };
 
   beforeAll(async () => {
@@ -105,6 +107,8 @@ describe('Profile (e2e)', () => {
         username: 'other_user',
         password: 'Password123!',
         phoneNumber: '79991112233',
+        firstName: 'Other',
+        lastName: 'User',
       });
 
       return request(httpServer)

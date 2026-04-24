@@ -21,6 +21,8 @@ describe('Posts (e2e)', () => {
     username: 'post_user',
     password: 'Password123!',
     phoneNumber: '79997776655',
+    firstName: 'Post',
+    lastName: 'Tester',
   };
 
   beforeAll(async () => {

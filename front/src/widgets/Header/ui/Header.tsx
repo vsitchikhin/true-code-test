@@ -66,7 +66,7 @@ export const Header = () => {
               </Button>
             </div>
 
-            <Link to="/user/me" className={styles.user}>
+            <Link to="/user/me" className={styles.user} data-testid="header-user-link">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={authData?.username} className={styles.avatar} />
               ) : (

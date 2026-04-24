@@ -16,6 +16,8 @@ test.describe('Регистрация', () => {
     await page.goto('/register');
 
     // Заполняем форму
+    await page.getByLabel(/^Имя$/).fill('Иван');
+    await page.getByLabel(/^Фамилия$/).fill('Иванов');
     await page.getByLabel(/Имя пользователя/i).fill(uniqueUsername);
     await page.getByLabel(/Email/i).fill(uniqueEmail);
     await page.getByLabel(/Телефон/i).fill(uniquePhone);

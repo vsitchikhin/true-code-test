@@ -5,6 +5,8 @@ async function registerAndLogin(page: Page) {
   const password = 'password123';
 
   await page.goto('/register');
+  await page.getByLabel(/^Имя$/).fill('Иван');
+  await page.getByLabel(/^Фамилия$/).fill('Иванов');
   await page.getByLabel(/Имя пользователя/i).fill(username);
   await page.getByLabel(/Email/i).fill(`${username}@test.com`);
   await page
@@ -25,17 +27,17 @@ async function registerAndLogin(page: Page) {
 test.describe('Страница профиля', () => {
   test('переход на /user/me показывает профиль текущего пользователя', async ({ page }) => {
     const username = await registerAndLogin(page);
-
     await page.goto('/user/me');
-
-    await expect(page.getByText(username)).toBeVisible({ timeout: 8000 });
+    await expect(page.getByTestId('profile-handle')).toHaveText(`@${username.toLowerCase()}`, {
+      timeout: 8000,
+    });
     await expect(page.getByRole('button', { name: /редактировать/i })).toBeVisible();
   });
 
   test('клик по аватару в хедере ведёт на страницу профиля', async ({ page }) => {
     await registerAndLogin(page);
 
-    await page.locator('[class*="user"]').click();
+    await page.getByTestId('header-user-link').click();
     await expect(page).toHaveURL(/\/user\//);
   });
 

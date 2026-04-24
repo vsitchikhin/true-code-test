@@ -6,6 +6,8 @@ test.describe('Бесконечная лента', () => {
     const password = 'password123';
 
     await page.goto('/register');
+    await page.getByLabel(/^Имя$/).fill('Иван');
+    await page.getByLabel(/^Фамилия$/).fill('Иванов');
     await page.getByLabel(/Имя пользователя/i).fill(uniqueUsername);
     await page.getByLabel(/Email/i).fill(`${uniqueUsername}@test.com`);
     await page.getByLabel(/Телефон/i).fill(`+7999${Date.now().toString().slice(-7)}`);

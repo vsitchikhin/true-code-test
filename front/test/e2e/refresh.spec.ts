@@ -10,6 +10,8 @@ test.describe('Автоматическое обновление токенов'
 
     // 1. Регистрируемся и логинимся
     await page.goto('/register');
+    await page.getByLabel(/^Имя$/).fill('Иван');
+    await page.getByLabel(/^Фамилия$/).fill('Иванов');
     await page.getByLabel(/Имя пользователя/i).fill(uniqueUsername);
     await page.getByLabel(/Email/i).fill(`${uniqueUsername}@test.com`);
     await page

@@ -5,6 +5,8 @@ async function registerAndLogin(page: Page) {
   const password = 'password123';
 
   await page.goto('/register');
+  await page.getByLabel(/^Имя$/).fill('Иван');
+  await page.getByLabel(/^Фамилия$/).fill('Иванов');
   await page.getByLabel(/Имя пользователя/i).fill(username);
   await page.getByLabel(/Email/i).fill(`${username}@test.com`);
   await page
@@ -94,6 +96,8 @@ test.describe('Действия с постами', () => {
     // Регистрируемся вторым пользователем
     const user2 = `other_${Date.now().toString().slice(-8)}`;
     await page.goto('/register');
+    await page.getByLabel(/^Имя$/).fill('Иван');
+    await page.getByLabel(/^Фамилия$/).fill('Иванов');
     await page.getByLabel(/Имя пользователя/i).fill(user2);
     await page.getByLabel(/Email/i).fill(`${user2}@test.com`);
     await page

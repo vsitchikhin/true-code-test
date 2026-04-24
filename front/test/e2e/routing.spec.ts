@@ -25,6 +25,8 @@ test.describe('Авторизационный роутинг', () => {
     const phone = `+7${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
     await page.goto('/register');
+    await page.getByLabel(/^Имя$/).fill('Иван');
+    await page.getByLabel(/^Фамилия$/).fill('Иванов');
     await page.getByLabel(/Имя пользователя/i).fill(username);
     await page.getByLabel(/Email/i).fill(email);
     await page.getByLabel(/Телефон/i).fill(phone);
@@ -54,6 +56,8 @@ test.describe('Авторизационный роутинг', () => {
     const username = `user_${Date.now()}`;
     const phone = `+7${Math.floor(1000000000 + Math.random() * 9000000000)}`;
     await page.goto('/register');
+    await page.getByLabel(/^Имя$/).fill('Иван');
+    await page.getByLabel(/^Фамилия$/).fill('Иванов');
     await page.getByLabel(/Имя пользователя/i).fill(username);
     await page.getByLabel(/Email/i).fill(`${username}@test.com`);
     await page.getByLabel(/Телефон/i).fill(phone);

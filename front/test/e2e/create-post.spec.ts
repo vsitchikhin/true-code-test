@@ -5,6 +5,8 @@ async function registerAndLogin(page: Page) {
   const password = 'password123';
 
   await page.goto('/register');
+  await page.getByLabel(/^Имя$/).fill('Иван');
+  await page.getByLabel(/^Фамилия$/).fill('Иванов');
   await page.getByLabel(/Имя пользователя/i).fill(username);
   await page.getByLabel(/Email/i).fill(`${username}@test.com`);
   await page

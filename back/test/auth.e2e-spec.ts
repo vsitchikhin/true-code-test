@@ -31,6 +31,8 @@ describe('Authentication (e2e)', () => {
     username: 'e2e_user',
     password: 'Password123!',
     phoneNumber: '+70000000000',
+    firstName: 'E2E',
+    lastName: 'User',
   };
 
   interface AuthResponse {

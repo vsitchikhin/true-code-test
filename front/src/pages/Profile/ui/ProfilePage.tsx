@@ -171,12 +171,14 @@ export const ProfilePage: React.FC = () => {
             ) : (
               <div className={styles.details}>
                 <div className={styles.nameRow}>
-                  <h1 className={styles.username}>
+                  <h1 className={styles.username} data-testid="profile-username">
                     {user?.firstName || user?.lastName
                       ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
                       : user?.username}
                   </h1>
-                  <span className={styles.handle}>@{user?.username?.toLowerCase()}</span>
+                  <span className={styles.handle} data-testid="profile-handle">
+                    @{user?.username?.toLowerCase()}
+                  </span>
                 </div>
 
                 {user?.bio && <p className={styles.bio}>{user.bio}</p>}
