@@ -1,7 +1,12 @@
+.feedWrapper {
+  background: #f3f4f6;
+  min-height: calc(100vh - 64px);
+}
+
 .feed {
   max-width: 600px;
   margin: 0 auto;
-  padding: 24px 0 48px;
+  padding: 24px 12px 48px;
 }
 
 .sortBar {

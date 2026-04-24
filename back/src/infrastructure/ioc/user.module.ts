@@ -5,6 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
+import { GetProfileByUsernameUseCase } from '@application/use-cases/get-profile-by-username.use-case';
 import { GetProfileUseCase } from '@application/use-cases/get-profile.use-case';
 import { RegisterUserUseCase } from '@application/use-cases/register-user.use-case';
 import { UpdateAvatarUseCase } from '@application/use-cases/update-avatar.use-case';
@@ -38,12 +39,14 @@ import { UserController } from '@presentation/controllers/user.controller';
     },
     RegisterUserUseCase,
     GetProfileUseCase,
+    GetProfileByUsernameUseCase,
     UpdateProfileUseCase,
     UpdateAvatarUseCase,
   ],
   exports: [
     RegisterUserUseCase,
     GetProfileUseCase,
+    GetProfileByUsernameUseCase,
     UpdateProfileUseCase,
     UpdateAvatarUseCase,
     'IUserRepository',

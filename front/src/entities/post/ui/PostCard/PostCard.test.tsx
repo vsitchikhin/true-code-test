@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
 import { PostCard } from './PostCard';
 import { useUserStore } from '@/entities/user';
 import { api } from '@/shared/api';
@@ -79,9 +80,11 @@ const mockAuthorUser = {
 function renderCard(post = mockPost) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
-    <QueryClientProvider client={queryClient}>
-      <PostCard post={post} />
-    </QueryClientProvider>,
+    <MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <PostCard post={post} />
+      </QueryClientProvider>
+    </MemoryRouter>,
   );
 }
 

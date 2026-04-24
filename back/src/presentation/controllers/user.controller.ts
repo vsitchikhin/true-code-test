@@ -13,12 +13,14 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 
 import { diskStorage } from 'multer';
 
+import { GetProfileByUsernameUseCase } from '@application/use-cases/get-profile-by-username.use-case';
 import { GetProfileUseCase } from '@application/use-cases/get-profile.use-case';
 import { RegisterUserUseCase } from '@application/use-cases/register-user.use-case';
 import { UpdateAvatarUseCase } from '@application/use-cases/update-avatar.use-case';
@@ -35,6 +37,7 @@ export class UserController {
   constructor(
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly getProfileUseCase: GetProfileUseCase,
+    private readonly getProfileByUsernameUseCase: GetProfileByUsernameUseCase,
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly updateAvatarUseCase: UpdateAvatarUseCase,
   ) {}
@@ -66,6 +69,31 @@ export class UserController {
     return UserResponseDto.fromDomain(user);
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Получение профиля пользователя по ID' })
+  @ApiResponse({ status: 200, type: UserResponseDto })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
+  async getById(@Param('id') id: string): Promise<UserResponseDto> {
+    try {
+      const user = await this.getProfileUseCase.execute(id);
+      return UserResponseDto.fromDomain(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new BadRequestException(error.message);
+      }
+      throw error;
+    }
+  }
+
+  @Get('username/:username')
+  @ApiOperation({ summary: 'Получение профиля пользователя по юзернейму' })
+  @ApiResponse({ status: 200, type: UserResponseDto })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
+  async getByUsername(@Param('username') username: string): Promise<UserResponseDto> {
+    const user = await this.getProfileByUsernameUseCase.execute(username);
+    return UserResponseDto.fromDomain(user);
+  }
+
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Обновление профиля текущего пользователя' })
@@ -93,6 +121,18 @@ export class UserController {
   @Patch('avatar')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Обновление аватара пользователя' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        avatar: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 200, type: UserResponseDto })
   @UseInterceptors(
     FileInterceptor('avatar', {

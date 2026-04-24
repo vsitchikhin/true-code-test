@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Menu } from '@base-ui/react/menu';
 import { useUserStore } from '@/entities/user';
 import { api } from '@/shared/api';
@@ -101,9 +102,19 @@ export const PostCard: React.FC<PostCardProps> = ({ post, className = '' }) => {
     <article className={`${styles.postCard} ${className} ${isDeleting ? styles.deleting : ''}`}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <img src={avatarSrc} alt={author?.username} className={styles.avatar} />
+          <Link
+            to={isAuthor ? '/user/me' : `/user/${author?.username}`}
+            className={styles.authorLink}
+          >
+            <img src={avatarSrc} alt={author?.username} className={styles.avatar} />
+          </Link>
           <div className={styles.authorInfo}>
-            <span className={styles.username}>{author?.username || 'Аноним'}</span>
+            <Link
+              to={isAuthor ? '/user/me' : `/user/${author?.username}`}
+              className={styles.usernameLink}
+            >
+              <span className={styles.username}>{author?.username || 'Аноним'}</span>
+            </Link>
             <time className={styles.date} dateTime={createdAt}>
               {formattedDate}
             </time>

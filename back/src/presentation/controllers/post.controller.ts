@@ -31,6 +31,8 @@ import { diskStorage } from 'multer';
 import { CreatePostUseCase } from '@application/use-cases/create-post.use-case';
 import { DeletePostUseCase } from '@application/use-cases/delete-post.use-case';
 import { GetFeedUseCase } from '@application/use-cases/get-feed.use-case';
+import { GetPostsByUserIdUseCase } from '@application/use-cases/get-posts-by-user-id.use-case';
+import { GetPostsByUsernameUseCase } from '@application/use-cases/get-posts-by-username.use-case';
 import { UpdatePostUseCase } from '@application/use-cases/update-post.use-case';
 import { JwtAuthGuard } from '@infrastructure/security/jwt-auth.guard';
 import { CurrentUser } from '@presentation/decorators/current-user.decorator';
@@ -45,6 +47,8 @@ export class PostController {
     private readonly getFeedUseCase: GetFeedUseCase,
     private readonly deletePostUseCase: DeletePostUseCase,
     private readonly updatePostUseCase: UpdatePostUseCase,
+    private readonly getPostsByUserIdUseCase: GetPostsByUserIdUseCase,
+    private readonly getPostsByUsernameUseCase: GetPostsByUsernameUseCase,
   ) {}
 
   @Post()
@@ -115,6 +119,57 @@ export class PostController {
       limit: limitNum > 0 ? limitNum : 10,
       order,
     });
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Получение постов конкретного пользователя' })
+  @ApiResponse({ status: 200, description: 'Успешное получение постов', type: FeedResponseDto })
+  @ApiQuery({ name: 'page', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: String })
+  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'] })
+  async getByUser(
+    @Param('userId') userId: string,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<FeedResponseDto> {
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+
+    return this.getPostsByUserIdUseCase.execute({
+      userId,
+      page: pageNum > 0 ? pageNum : 1,
+      limit: limitNum > 0 ? limitNum : 10,
+      order,
+    });
+  }
+
+  @Get('username/:username')
+  @ApiOperation({ summary: 'Получение постов пользователя по юзернейму' })
+  @ApiResponse({ status: 200, description: 'Успешное получение постов', type: FeedResponseDto })
+  @ApiQuery({ name: 'page', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: String })
+  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'] })
+  async getByUsername(
+    @Param('username') username: string,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<FeedResponseDto> {
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+
+    const result = await this.getPostsByUsernameUseCase.execute({
+      username,
+      page: pageNum > 0 ? pageNum : 1,
+      limit: limitNum > 0 ? limitNum : 10,
+      order,
+    });
+
+    return {
+      posts: result.posts.map((post) => PostResponseDto.fromDomain(post)),
+      meta: result.meta,
+    };
   }
 
   @Patch(':id')

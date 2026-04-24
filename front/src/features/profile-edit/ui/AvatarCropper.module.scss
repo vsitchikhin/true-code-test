@@ -1,0 +1,113 @@
+.cropperWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cropperContainer {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+// ─── Zoom control ─────────────────────────────────────────────────────────────
+
+.zoomLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+  span:first-child {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #6b7280;
+  }
+}
+
+.zoomValue {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+// Range input — трек окрашивается через CSS custom property --pct
+.rangeInput {
+  width: 100%;
+  height: 20px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+
+  &:focus { outline: none; }
+
+  // WebKit
+  &::-webkit-slider-runnable-track {
+    height: 5px;
+    border-radius: 99px;
+    background: linear-gradient(
+      to right,
+      #6366f1 var(--pct, 0%),
+      #e5e7eb var(--pct, 0%)
+    );
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 2.5px solid #6366f1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    margin-top: -7.5px; // центрирует thumb по треку: (20 - 5) / 2
+    cursor: grab;
+    transition: transform 0.1s, box-shadow 0.1s;
+
+    &:active { cursor: grabbing; }
+  }
+
+  &:hover::-webkit-slider-thumb,
+  &:focus::-webkit-slider-thumb {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.15);
+  }
+
+  // Firefox
+  &::-moz-range-track {
+    height: 5px;
+    border-radius: 99px;
+    background: linear-gradient(
+      to right,
+      #6366f1 var(--pct, 0%),
+      #e5e7eb var(--pct, 0%)
+    );
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 2.5px solid #6366f1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    cursor: grab;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}

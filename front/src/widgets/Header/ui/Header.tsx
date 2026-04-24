@@ -26,7 +26,7 @@ export const Header = () => {
   };
 
   const avatarUrl = authData?.avatarPath
-    ? `${import.meta.env.VITE_UPLOADS_URL}/${authData.avatarPath}`
+    ? `${import.meta.env.VITE_UPLOADS_URL || 'http://localhost:3000'}${authData.avatarPath}`
     : null;
 
   return (
@@ -69,7 +69,7 @@ export const Header = () => {
             onClose={() => setIsCreateModalOpen(false)}
           />
 
-          <Link to="/profile" className={styles.user}>
+          <Link to="/user/me" className={styles.user}>
             {avatarUrl ? (
               <img src={avatarUrl} alt={authData?.username} className={styles.avatar} />
             ) : (

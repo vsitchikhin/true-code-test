@@ -7,6 +7,18 @@ export interface IPostRepository {
     limit: number,
     order?: 'ASC' | 'DESC',
   ): Promise<{ posts: Post[]; total: number }>;
+  findByUserIdPaginated(
+    userId: string,
+    page: number,
+    limit: number,
+    order?: 'ASC' | 'DESC',
+  ): Promise<{ posts: Post[]; total: number }>;
+  findByUsernamePaginated(
+    username: string,
+    page: number,
+    limit: number,
+    order?: 'ASC' | 'DESC',
+  ): Promise<{ posts: Post[]; total: number }>;
   findById(id: string): Promise<Post | null>;
   delete(id: string): Promise<void>;
   update(post: Post): Promise<Post>;

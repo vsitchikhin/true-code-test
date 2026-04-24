@@ -2,8 +2,7 @@
   background: white;
   border-radius: 16px;
   padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
   transition: opacity 0.3s ease;
 
   &.deleting {
@@ -35,6 +34,16 @@
 .authorInfo {
   display: flex;
   flex-direction: column;
+}
+
+.authorLink, .usernameLink {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+}
+
+.usernameLink:hover .username {
+  text-decoration: underline;
 }
 
 .username {

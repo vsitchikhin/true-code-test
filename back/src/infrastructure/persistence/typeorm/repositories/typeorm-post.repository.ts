@@ -62,6 +62,42 @@ export class TypeOrmPostRepository implements IPostRepository {
     return { posts, total };
   }
 
+  async findByUserIdPaginated(
+    userId: string,
+    page: number,
+    limit: number,
+    order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<{ posts: Post[]; total: number }> {
+    const [ormPosts, total] = await this.postRepo.findAndCount({
+      where: { authorId: userId },
+      relations: ['images', 'author'],
+      order: { createdAt: order },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const posts = ormPosts.map((ormPost) => this.toDomain(ormPost));
+    return { posts, total };
+  }
+
+  async findByUsernamePaginated(
+    username: string,
+    page: number,
+    limit: number,
+    order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<{ posts: Post[]; total: number }> {
+    const [ormPosts, total] = await this.postRepo.findAndCount({
+      where: { author: { username } },
+      relations: ['images', 'author'],
+      order: { createdAt: order },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const posts = ormPosts.map((ormPost) => this.toDomain(ormPost));
+    return { posts, total };
+  }
+
   async findById(id: string): Promise<Post | null> {
     const ormPost = await this.postRepo.findOne({
       where: { id },

@@ -56,37 +56,39 @@ const HomePage: React.FC = () => {
 
   return (
     <PageLayout>
-      <div className={styles.feed}>
-        <div className={styles.sortBar}>
-          <button
-            className={`${styles.sortBtn} ${order === 'DESC' ? styles.sortBtnActive : ''}`}
-            onClick={() => setOrder('DESC')}
-          >
-            <ArrowDownWideNarrow size={14} />
-            Сначала новые
-          </button>
-          <button
-            className={`${styles.sortBtn} ${order === 'ASC' ? styles.sortBtnActive : ''}`}
-            onClick={() => setOrder('ASC')}
-          >
-            <ArrowUpWideNarrow size={14} />
-            Сначала старые
-          </button>
+      <div className={styles.feedWrapper}>
+        <div className={styles.feed}>
+          <div className={styles.sortBar}>
+            <button
+              className={`${styles.sortBtn} ${order === 'DESC' ? styles.sortBtnActive : ''}`}
+              onClick={() => setOrder('DESC')}
+            >
+              <ArrowDownWideNarrow size={14} />
+              Сначала новые
+            </button>
+            <button
+              className={`${styles.sortBtn} ${order === 'ASC' ? styles.sortBtnActive : ''}`}
+              onClick={() => setOrder('ASC')}
+            >
+              <ArrowUpWideNarrow size={14} />
+              Сначала старые
+            </button>
+          </div>
+
+          {isError && allPosts.length === 0 ? (
+            <div className={styles.error}>Не удалось загрузить посты</div>
+          ) : (
+            <>
+              <PostList posts={allPosts} isLoading={isLoading} />
+
+              {hasNextPage && (
+                <div ref={ref} className={styles.loaderTrigger}>
+                  {isFetchingNextPage && <div className={styles.miniLoader} />}
+                </div>
+              )}
+            </>
+          )}
         </div>
-
-        {isError && allPosts.length === 0 ? (
-          <div className={styles.error}>Не удалось загрузить посты</div>
-        ) : (
-          <>
-            <PostList posts={allPosts} isLoading={isLoading} />
-
-            {hasNextPage && (
-              <div ref={ref} className={styles.loaderTrigger}>
-                {isFetchingNextPage && <div className={styles.miniLoader} />}
-              </div>
-            )}
-          </>
-        )}
       </div>
     </PageLayout>
   );

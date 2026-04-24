@@ -317,14 +317,54 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags users
+     * @name UserControllerGetById
+     * @summary Получение профиля пользователя по ID
+     * @request GET:/api/users/{id}
+     */
+    userControllerGetById: (id: string, params: RequestParams = {}) =>
+      this.request<UserResponseDto, void>({
+        path: `/api/users/${id}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
+     * @name UserControllerGetByUsername
+     * @summary Получение профиля пользователя по юзернейму
+     * @request GET:/api/users/username/{username}
+     */
+    userControllerGetByUsername: (username: string, params: RequestParams = {}) =>
+      this.request<UserResponseDto, void>({
+        path: `/api/users/username/${username}`,
+        method: 'GET',
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
      * @name UserControllerUpdateAvatar
      * @summary Обновление аватара пользователя
      * @request PATCH:/api/users/avatar
      */
-    userControllerUpdateAvatar: (params: RequestParams = {}) =>
+    userControllerUpdateAvatar: (
+      data: {
+        /** @format binary */
+        avatar?: File;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<UserResponseDto, any>({
         path: `/api/users/avatar`,
         method: 'PATCH',
+        body: data,
+        type: ContentType.FormData,
         format: 'json',
         ...params,
       }),
@@ -422,6 +462,56 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<FeedResponseDto, any>({
         path: `/api/posts`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags posts
+     * @name PostControllerGetByUser
+     * @summary Получение постов конкретного пользователя
+     * @request GET:/api/posts/user/{userId}
+     */
+    postControllerGetByUser: (
+      userId: string,
+      query?: {
+        page?: string;
+        limit?: string;
+        order?: 'ASC' | 'DESC';
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<FeedResponseDto, any>({
+        path: `/api/posts/user/${userId}`,
+        method: 'GET',
+        query: query,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags posts
+     * @name PostControllerGetByUsername
+     * @summary Получение постов пользователя по юзернейму
+     * @request GET:/api/posts/username/{username}
+     */
+    postControllerGetByUsername: (
+      username: string,
+      query?: {
+        page?: string;
+        limit?: string;
+        order?: 'ASC' | 'DESC';
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<FeedResponseDto, any>({
+        path: `/api/posts/username/${username}`,
         method: 'GET',
         query: query,
         format: 'json',
