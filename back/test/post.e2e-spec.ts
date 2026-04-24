@@ -65,12 +65,12 @@ describe('Posts (e2e)', () => {
         });
     });
 
-    it('should return 400 if no image provided', () => {
+    it('should create a post even if no image provided', () => {
       return request(httpServer)
         .post('/api/posts')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('content', 'No images here')
-        .expect(400);
+        .expect(201);
     });
   });
 

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { PostCard } from './PostCard';
-import { Post } from '../../model/types';
+import type { Post } from '../../model/types';
 
 const mockPost: Post = {
   id: '1',
@@ -39,7 +39,7 @@ describe('PostCard', () => {
   it('отображает галерею, если есть изображения', () => {
     const postWithImages: Post = {
       ...mockPost,
-      images: [{ id: 'img-1', postId: '1', path: '/uploads/test.png', order: 0 }],
+      images: [{ id: 'img-1', path: '/uploads/test.png', order: 0 }],
     };
     render(<PostCard post={postWithImages} />);
 

@@ -27,6 +27,7 @@ import { GetFeedUseCase } from '@application/use-cases/get-feed.use-case';
 import { UpdatePostUseCase } from '@application/use-cases/update-post.use-case';
 import { JwtAuthGuard } from '@infrastructure/security/jwt-auth.guard';
 import { CurrentUser } from '@presentation/decorators/current-user.decorator';
+import { FeedResponseDto } from '@presentation/dtos/post-response.dto';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -74,8 +75,11 @@ export class PostController {
 
   @Get()
   @ApiOperation({ summary: 'Получение ленты постов' })
-  @ApiResponse({ status: 200, description: 'Успешное получение ленты' })
-  async getFeed(@Query('page') page: string = '1', @Query('limit') limit: string = '10') {
+  @ApiResponse({ status: 200, description: 'Успешное получение ленты', type: FeedResponseDto })
+  async getFeed(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ): Promise<FeedResponseDto> {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
 

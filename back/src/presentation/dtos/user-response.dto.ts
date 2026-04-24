@@ -15,10 +15,10 @@ export class UserResponseDto {
   @ApiProperty()
   phoneNumber: string;
 
-  @ApiProperty({ required: false, nullable: true })
+  @ApiProperty({ type: 'string', required: false, nullable: true })
   bio: string | null;
 
-  @ApiProperty({ required: false, nullable: true })
+  @ApiProperty({ type: 'string', required: false, nullable: true })
   avatarPath: string | null;
 
   @ApiProperty()

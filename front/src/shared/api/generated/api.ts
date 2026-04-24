@@ -26,8 +26,8 @@ export interface UserResponseDto {
   email: string;
   username: string;
   phoneNumber: string;
-  bio?: object | null;
-  avatarPath?: object | null;
+  bio?: string | null;
+  avatarPath?: string | null;
   /** @format date-time */
   createdAt: string;
 }
@@ -60,6 +60,36 @@ export interface AuthResponseDto {
    * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
    */
   accessToken: string;
+}
+
+export interface PostImageResponseDto {
+  id: string;
+  path: string;
+  order: number;
+  /** @format date-time */
+  createdAt: string;
+}
+
+export interface PostResponseDto {
+  id: string;
+  content: string;
+  authorId: string;
+  /** @format date-time */
+  createdAt: string;
+  images: PostImageResponseDto[];
+  author?: UserResponseDto;
+}
+
+export interface FeedMetaDto {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface FeedResponseDto {
+  posts: PostResponseDto[];
+  meta: FeedMetaDto;
 }
 
 import type {
@@ -353,7 +383,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Post
+     * @tags posts
      * @name PostControllerCreate
      * @request POST:/api/posts
      */
@@ -367,8 +397,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Post
+     * @tags posts
      * @name PostControllerGetFeed
+     * @summary Получение ленты постов
      * @request GET:/api/posts
      */
     postControllerGetFeed: (
@@ -378,17 +409,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<FeedResponseDto, any>({
         path: `/api/posts`,
         method: 'GET',
         query: query,
+        format: 'json',
         ...params,
       }),
 
     /**
      * No description
      *
-     * @tags Post
+     * @tags posts
      * @name PostControllerUpdate
      * @request PATCH:/api/posts/{id}
      */
@@ -402,7 +434,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Post
+     * @tags posts
      * @name PostControllerDelete
      * @request DELETE:/api/posts/{id}
      */

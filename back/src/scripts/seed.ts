@@ -5,7 +5,6 @@ import { AppModule } from '@/app.module';
 import { CreatePostUseCase } from '@application/use-cases/create-post.use-case';
 import { RegisterUserUseCase } from '@application/use-cases/register-user.use-case';
 import type { User } from '@domain/entities/user.entity';
-import { IPostRepository } from '@domain/repositories/post.repository.interface';
 import { IUserRepository } from '@domain/repositories/user.repository.interface';
 
 const SEED_USERS = [
@@ -33,13 +32,13 @@ const SEED_POSTS = [
   {
     userIndex: 0,
     content: 'Привет всем! Это мой первый пост на True Code. Рад быть здесь 🚀',
-    imagePaths: [],
+    imagePaths: ['/uploads/test-image-1.png'],
   },
   {
     userIndex: 1,
     content:
       'Сегодня разобрался с NestJS и чистой архитектурой. Очень мощная связка! #backend #nestjs',
-    imagePaths: [],
+    imagePaths: ['/uploads/test-image-2.png', '/uploads/test-image-3.png'],
   },
   {
     userIndex: 2,
@@ -50,7 +49,7 @@ const SEED_POSTS = [
     userIndex: 0,
     content:
       'Работаю над лентой новостей. Tanstack Query + React — просто огонь для работы с сервером.',
-    imagePaths: [],
+    imagePaths: ['/uploads/test-image-3.png'],
   },
   {
     userIndex: 1,
@@ -62,7 +61,17 @@ const SEED_POSTS = [
     userIndex: 2,
     content:
       'Рефакторила монолит на чистую архитектуру весь день. Болит голова, но результат того стоит 😅',
-    imagePaths: [],
+    imagePaths: [
+      '/uploads/test-image-1.png',
+      '/uploads/test-image-2.png',
+      '/uploads/test-image-3.png',
+      '/uploads/test-image-1.png',
+      '/uploads/test-image-2.png',
+      '/uploads/test-image-3.png',
+      '/uploads/test-image-1.png',
+      '/uploads/test-image-2.png',
+      '/uploads/test-image-3.png',
+    ],
   },
   {
     userIndex: 0,
@@ -167,7 +176,6 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
   const userRepository = app.get<IUserRepository>('IUserRepository');
-  const postRepository = app.get<IPostRepository>(IPostRepository);
   const registerUseCase = app.get(RegisterUserUseCase);
   const createPostUseCase = app.get(CreatePostUseCase);
 
@@ -175,15 +183,6 @@ async function bootstrap() {
   const users: User[] = [];
   for (const userData of SEED_USERS) {
     users.push(await ensureUser(registerUseCase, userRepository, userData));
-  }
-
-  // Очищаем старые посты
-  const { posts: existingPosts } = await postRepository.findPaginated(1, 200);
-  for (const post of existingPosts) {
-    await postRepository.delete(post.id);
-  }
-  if (existingPosts.length > 0) {
-    console.log(`Удалено старых постов: ${existingPosts.length}`);
   }
 
   // Создаём посты
